@@ -10,3 +10,6 @@ test "write file test":
   strm.write(120'u32)
   strm.write("WAVE")
   strm.close()
+
+test "parseWaveFile":
+  parseWaveFile("tests/testdata/simple.wav")

@@ -2,19 +2,20 @@
 ## https://github.com/python/cpython/blob/3.8/Lib/wave.py
 ## https://qiita.com/syuhei1008/items/0dd07489f58158fb4f83
 ## https://so-zou.jp/software/tech/file/format/wav/#data-chunk
+## https://uppudding.hatenadiary.org/entry/20071223/1198420222
 
-import os
+import os, streams
 
 type
   Wave = ref object
     file: File
     channelsNumber: int
     framesNumber: int
-  RiffHeader = ref object
+  RiffHeader = ref object # 12 byte
     riff: string # 4byte
     size: uint32 # 4byte
-    `type`: string # 4byte
-  FormatChunk = ref object
+    rType: string # 4byte
+  FormatChunk = ref object # 24 byte
     id: string # 4byte
     size: uint32 # 4byte
     format: array[2, byte] # 2byte
@@ -145,7 +146,7 @@ const
   WAVE_FORMAT_EXTENSIBLE               =  [0xFF,  0xFE]  #
 
 proc newRiffHeader(data: seq[byte]): RiffHeader =
-  result = RiffHeader(riff: "RIFF", size: data.sizeof.uint32, `type`: "WAVE")
+  result = RiffHeader(riff: "RIFF", size: data.sizeof.uint32, rType: "WAVE")
 
 proc newFormatChunk(format, channels: array[2, byte],
                     sampleRate, bytePerSec: uint32,
@@ -181,6 +182,30 @@ proc openWaveFile*(f: string) =
     #     return Wave_write(f)
     # else:
     #     raise Error("mode must be 'r', 'rb', 'w', or 'wb'")
+
+proc parseRiffHeader*(strm: Stream): RiffHeader =
+  ## 12 byte
+  result = RiffHeader()
+  for i in 1..4:
+    result.riff.add(strm.readChar())
+  result.size = strm.readUint32()
+  for i in 1..4:
+    result.rType.add(strm.readChar())
+
+proc parseFormatHeader*(strm: Stream): RiffHeader =
+  ## 24 byte
+  discard
+
+proc parseWaveFile*(file: string) =
+  var strm = newFileStream(file, fmRead)
+  defer: strm.close()
+  # RIFF Header - 12byte
+  var riffHeader = strm.parseRiffHeader()
+  echo riffHeader[]
+  # Format chunk - 24byte
+  discard
+  # Data chunk - N byte
+  discard
 
 # def openfp(f, mode=None):
 #     warnings.warn("wave.openfp is deprecated since Python 3.7. "
