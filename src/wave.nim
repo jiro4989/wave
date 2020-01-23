@@ -12,7 +12,7 @@ type
     channelsNumber: int
     framesNumber: int
   RiffHeader = ref object # 12 byte
-    riff: string # 4byte
+    id: string # 4byte
     size: uint32 # 4byte
     rType: string # 4byte
   FormatChunk = ref object # 24 byte
@@ -146,7 +146,7 @@ const
   WAVE_FORMAT_EXTENSIBLE               =  [0xFF,  0xFE]  #
 
 proc newRiffHeader(data: seq[byte]): RiffHeader =
-  result = RiffHeader(riff: "RIFF", size: data.sizeof.uint32, rType: "WAVE")
+  result = RiffHeader(id: "RIFF", size: data.sizeof.uint32, rType: "WAVE")
 
 proc newFormatChunk(format, channels: array[2, byte],
                     sampleRate, bytePerSec: uint32,
@@ -187,14 +187,23 @@ proc parseRiffHeader*(strm: Stream): RiffHeader =
   ## 12 byte
   result = RiffHeader()
   for i in 1..4:
-    result.riff.add(strm.readChar())
+    result.id.add(strm.readChar())
   result.size = strm.readUint32()
   for i in 1..4:
     result.rType.add(strm.readChar())
 
-proc parseFormatHeader*(strm: Stream): RiffHeader =
+proc parseFormatChunk*(strm: Stream): FormatChunk =
   ## 24 byte
-  discard
+  result = FormatChunk()
+  for i in 1..4:
+    result.id.add(strm.readChar())
+  result.size = strm.readUint32()
+  strm.read(result.format)
+  strm.read(result.channels)
+  result.samplerate = strm.readUint32()
+  result.bytepersec = strm.readUint32()
+  strm.read(result.blockalign)
+  strm.read(result.bitswidth)
 
 proc parseWaveFile*(file: string) =
   var strm = newFileStream(file, fmRead)
@@ -203,7 +212,8 @@ proc parseWaveFile*(file: string) =
   var riffHeader = strm.parseRiffHeader()
   echo riffHeader[]
   # Format chunk - 24byte
-  discard
+  var fmtChunk = strm.parseFormatChunk()
+  echo fmtChunk[]
   # Data chunk - N byte
   discard
 
