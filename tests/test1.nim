@@ -56,7 +56,7 @@ suite "sample":
 test "parseWaveFile":
   echo "simple.wav"
   echo "==========="
-  discard parseWaveFile(outDir/"simple.wav")
+  echo openWaveReadFile(outDir/"simple.wav")
 
 suite "usecase":
   test "create basic wav file":

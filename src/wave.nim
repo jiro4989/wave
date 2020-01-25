@@ -4,10 +4,10 @@
 ## https://so-zou.jp/software/tech/file/format/wav/#data-chunk
 ## https://uppudding.hatenadiary.org/entry/20071223/1198420222
 
-import os, streams
+import streams
 
 type
-  Wave* = ref object
+  WaveRead* = ref object
     riffHeader: RiffHeader
     formatChunk: FormatChunk
     dataChunk: DataChunk
@@ -33,8 +33,6 @@ type
     bitsWidth: uint16 # 2byte
       ## 16ビットリニアPCM -> 16
       ## MS-ADPCM -> 4
-  FormatChunkEx* = ref object
-    formatChunk: FormatChunk
     extendedSize: uint16 # 2byte
     extended: seq[byte] # n byte
   DataChunk* = ref object
@@ -176,20 +174,6 @@ proc newDataChunk*(): DataChunk =
     data: newStringStream(),
   )
 
-proc openWaveFile*(f: string) =
-  discard
-    # if mode is None:
-    #     if hasattr(f, 'mode'):
-    #         mode = f.mode
-    #     else:
-    #         mode = 'rb'
-    # if mode in ('r', 'rb'):
-    #     return Wave_read(f)
-    # elif mode in ('w', 'wb'):
-    #     return Wave_write(f)
-    # else:
-    #     raise Error("mode must be 'r', 'rb', 'w', or 'wb'")
-
 proc parseRiffHeader*(strm: Stream): RiffHeader =
   ## 12 byte
   result = RiffHeader()
@@ -200,8 +184,7 @@ proc parseRiffHeader*(strm: Stream): RiffHeader =
 proc parseFormatChunk*(strm: Stream): FormatChunk =
   ## 24 byte
   result = FormatChunk()
-  for i in 1..4:
-    result.id.add(strm.readChar())
+  result.id = strm.readStr(4)
   result.size = strm.readUint32()
   result.format = strm.readUint16()
   result.nChannels = strm.readUint16()
@@ -209,12 +192,17 @@ proc parseFormatChunk*(strm: Stream): FormatChunk =
   result.frameRate = strm.readUint32()
   result.blockAlign = strm.readUint16()
   result.bitsWidth = strm.readUint16()
+  if 16'u32 < result.size:
+    result.extendedSize = strm.readUint16()
+    for i in 0'u16 ..< result.extendedSize:
+      result.extended.add(strm.readUint8())
 
-proc parseWaveFile*(file: string): Wave =
+proc openWaveReadFile*(file: string): WaveRead =
   var strm = newFileStream(file, fmRead)
   defer: strm.close()
-  # result.riffHeader = strm.parseRiffHeader()
-  # result.fmtChunk = strm.parseFormatChunk()
+  result = WaveRead()
+  result.riffHeader = strm.parseRiffHeader()
+  result.formatChunk = strm.parseFormatChunk()
   # result.data = strm.parseDataChunk()
 
 proc openWaveWriteFile*(fileName: string): WaveWrite =
@@ -296,3 +284,9 @@ proc writeFrames*(self: WaveWrite, data: openArray[byte]) =
   self.riffHeader.size = 4'u32 + 24'u32 + 8'u32 + self.dataChunk.size
   for b in data:
     self.dataChunk.data.write(b)
+
+proc `$`*(self: RiffHeader): string = $self[]
+proc `$`*(self: FormatChunk): string = $self[]
+proc `$`*(self: DataChunk): string = $self[]
+proc `$`*(self: WaveRead): string = $self[]
+proc `$`*(self: WaveWrite): string = $self[]
