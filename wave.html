@@ -1093,6 +1093,30 @@ function main() {
   <ul class="simple simple-toc-section">
       <li><a class="reference" href="#openWaveReadFile%2Cstring"
     title="openWaveReadFile(file: string): WaveRead"><wbr />open<wbr />Wave<wbr />Read<wbr />File<span class="attachedType">WaveRead</span></a></li>
+  <li><a class="reference" href="#close%2CWaveRead"
+    title="close(self: WaveRead)"><wbr />close<span class="attachedType">WaveRead</span></a></li>
+  <li><a class="reference" href="#nChannels%2CWaveRead"
+    title="nChannels(self: WaveRead)"><wbr />n<wbr />Channels<span class="attachedType">WaveRead</span></a></li>
+  <li><a class="reference" href="#sampleRate%2CWaveRead"
+    title="sampleRate(self: WaveRead)"><wbr />sample<wbr />Rate<span class="attachedType">WaveRead</span></a></li>
+  <li><a class="reference" href="#frameRate%2CWaveRead"
+    title="frameRate(self: WaveRead)"><wbr />frame<wbr />Rate<span class="attachedType">WaveRead</span></a></li>
+  <li><a class="reference" href="#nFrames%2CWaveRead"
+    title="nFrames(self: WaveRead)"><wbr />n<wbr />Frames<span class="attachedType">WaveRead</span></a></li>
+  <li><a class="reference" href="#compType%2CWaveRead"
+    title="compType(self: WaveRead)"><wbr />comp<wbr />Type<span class="attachedType">WaveRead</span></a></li>
+  <li><a class="reference" href="#compName%2CWaveRead"
+    title="compName(self: WaveRead)"><wbr />comp<wbr />Name<span class="attachedType">WaveRead</span></a></li>
+  <li><a class="reference" href="#params%2CWaveRead"
+    title="params(self: WaveRead)"><wbr />params<span class="attachedType">WaveRead</span></a></li>
+  <li><a class="reference" href="#readFrames%2CWaveRead%2Cint"
+    title="readFrames(self: WaveRead; n: int)"><wbr />read<wbr />Frames<span class="attachedType">WaveRead</span></a></li>
+  <li><a class="reference" href="#rewind%2CWaveRead"
+    title="rewind(self: WaveRead)"><wbr />rewind<span class="attachedType">WaveRead</span></a></li>
+  <li><a class="reference" href="#pos%2CWaveRead"
+    title="pos(self: WaveRead)"><wbr />pos<span class="attachedType">WaveRead</span></a></li>
+  <li><a class="reference" href="#pos%3D%2CWaveRead"
+    title="pos=(self: WaveRead)"><wbr />pos=<span class="attachedType">WaveRead</span></a></li>
   <li><a class="reference" href="#openWaveWriteFile%2Cstring"
     title="openWaveWriteFile(fileName: string): WaveWrite"><wbr />open<wbr />Wave<wbr />Write<wbr />File<span class="attachedType">WaveWrite</span></a></li>
   <li><a class="reference" href="#close%2CWaveWrite"
@@ -2010,6 +2034,90 @@ FAST
 
 
 </dd>
+<a id="close,WaveRead"></a>
+<dt><pre><span class="Keyword">proc</span> <a href="#close%2CWaveRead"><span class="Identifier">close</span></a><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="wave.html#WaveRead"><span class="Identifier">WaveRead</span></a><span class="Other">)</span> <span><span class="Other">{</span><span class="Other pragmadots">...</span><span class="Other">}</span></span><span class="pragmawrap"><span class="Other">{.</span><span class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span><span class="Other">.}</span></span></pre></dt>
+<dd>
+
+
+
+</dd>
+<a id="nChannels,WaveRead"></a>
+<dt><pre><span class="Keyword">proc</span> <a href="#nChannels%2CWaveRead"><span class="Identifier">nChannels</span></a><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="wave.html#WaveRead"><span class="Identifier">WaveRead</span></a><span class="Other">)</span> <span><span class="Other">{</span><span class="Other pragmadots">...</span><span class="Other">}</span></span><span class="pragmawrap"><span class="Other">{.</span><span class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span><span class="Other">.}</span></span></pre></dt>
+<dd>
+
+
+
+</dd>
+<a id="sampleRate,WaveRead"></a>
+<dt><pre><span class="Keyword">proc</span> <a href="#sampleRate%2CWaveRead"><span class="Identifier">sampleRate</span></a><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="wave.html#WaveRead"><span class="Identifier">WaveRead</span></a><span class="Other">)</span> <span><span class="Other">{</span><span class="Other pragmadots">...</span><span class="Other">}</span></span><span class="pragmawrap"><span class="Other">{.</span><span class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span><span class="Other">.}</span></span></pre></dt>
+<dd>
+
+
+
+</dd>
+<a id="frameRate,WaveRead"></a>
+<dt><pre><span class="Keyword">proc</span> <a href="#frameRate%2CWaveRead"><span class="Identifier">frameRate</span></a><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="wave.html#WaveRead"><span class="Identifier">WaveRead</span></a><span class="Other">)</span> <span><span class="Other">{</span><span class="Other pragmadots">...</span><span class="Other">}</span></span><span class="pragmawrap"><span class="Other">{.</span><span class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span><span class="Other">.}</span></span></pre></dt>
+<dd>
+
+
+
+</dd>
+<a id="nFrames,WaveRead"></a>
+<dt><pre><span class="Keyword">proc</span> <a href="#nFrames%2CWaveRead"><span class="Identifier">nFrames</span></a><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="wave.html#WaveRead"><span class="Identifier">WaveRead</span></a><span class="Other">)</span> <span><span class="Other">{</span><span class="Other pragmadots">...</span><span class="Other">}</span></span><span class="pragmawrap"><span class="Other">{.</span><span class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span><span class="Other">.}</span></span></pre></dt>
+<dd>
+
+
+
+</dd>
+<a id="compType,WaveRead"></a>
+<dt><pre><span class="Keyword">proc</span> <a href="#compType%2CWaveRead"><span class="Identifier">compType</span></a><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="wave.html#WaveRead"><span class="Identifier">WaveRead</span></a><span class="Other">)</span> <span><span class="Other">{</span><span class="Other pragmadots">...</span><span class="Other">}</span></span><span class="pragmawrap"><span class="Other">{.</span><span class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span><span class="Other">.}</span></span></pre></dt>
+<dd>
+
+
+
+</dd>
+<a id="compName,WaveRead"></a>
+<dt><pre><span class="Keyword">proc</span> <a href="#compName%2CWaveRead"><span class="Identifier">compName</span></a><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="wave.html#WaveRead"><span class="Identifier">WaveRead</span></a><span class="Other">)</span> <span><span class="Other">{</span><span class="Other pragmadots">...</span><span class="Other">}</span></span><span class="pragmawrap"><span class="Other">{.</span><span class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span><span class="Other">.}</span></span></pre></dt>
+<dd>
+
+
+
+</dd>
+<a id="params,WaveRead"></a>
+<dt><pre><span class="Keyword">proc</span> <a href="#params%2CWaveRead"><span class="Identifier">params</span></a><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="wave.html#WaveRead"><span class="Identifier">WaveRead</span></a><span class="Other">)</span> <span><span class="Other">{</span><span class="Other pragmadots">...</span><span class="Other">}</span></span><span class="pragmawrap"><span class="Other">{.</span><span class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span><span class="Other">.}</span></span></pre></dt>
+<dd>
+
+
+
+</dd>
+<a id="readFrames,WaveRead,int"></a>
+<dt><pre><span class="Keyword">proc</span> <a href="#readFrames%2CWaveRead%2Cint"><span class="Identifier">readFrames</span></a><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="wave.html#WaveRead"><span class="Identifier">WaveRead</span></a><span class="Other">;</span> <span class="Identifier">n</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">)</span> <span><span class="Other">{</span><span class="Other pragmadots">...</span><span class="Other">}</span></span><span class="pragmawrap"><span class="Other">{.</span><span class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span><span class="Other">.}</span></span></pre></dt>
+<dd>
+
+
+
+</dd>
+<a id="rewind,WaveRead"></a>
+<dt><pre><span class="Keyword">proc</span> <a href="#rewind%2CWaveRead"><span class="Identifier">rewind</span></a><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="wave.html#WaveRead"><span class="Identifier">WaveRead</span></a><span class="Other">)</span> <span><span class="Other">{</span><span class="Other pragmadots">...</span><span class="Other">}</span></span><span class="pragmawrap"><span class="Other">{.</span><span class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span><span class="Other">.}</span></span></pre></dt>
+<dd>
+
+
+
+</dd>
+<a id="pos,WaveRead"></a>
+<dt><pre><span class="Keyword">proc</span> <a href="#pos%2CWaveRead"><span class="Identifier">pos</span></a><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="wave.html#WaveRead"><span class="Identifier">WaveRead</span></a><span class="Other">)</span> <span><span class="Other">{</span><span class="Other pragmadots">...</span><span class="Other">}</span></span><span class="pragmawrap"><span class="Other">{.</span><span class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span><span class="Other">.}</span></span></pre></dt>
+<dd>
+
+
+
+</dd>
+<a id="pos=,WaveRead"></a>
+<dt><pre><span class="Keyword">proc</span> <a href="#pos%3D%2CWaveRead"><span class="Identifier">pos=</span></a><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="wave.html#WaveRead"><span class="Identifier">WaveRead</span></a><span class="Other">)</span> <span><span class="Other">{</span><span class="Other pragmadots">...</span><span class="Other">}</span></span><span class="pragmawrap"><span class="Other">{.</span><span class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span><span class="Other">.}</span></span></pre></dt>
+<dd>
+
+
+
+</dd>
 <a id="openWaveWriteFile,string"></a>
 <dt><pre><span class="Keyword">proc</span> <a href="#openWaveWriteFile%2Cstring"><span class="Identifier">openWaveWriteFile</span></a><span class="Other">(</span><span class="Identifier">fileName</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span><span class="Other">:</span> <a href="wave.html#WaveWrite"><span class="Identifier">WaveWrite</span></a> <span><span class="Other">{</span><span class="Other pragmadots">...</span><span class="Other">}</span></span><span class="pragmawrap"><span class="Other">{.</span><span class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span><span class="Other">.}</span></span></pre></dt>
 <dd>
@@ -2107,7 +2215,7 @@ FAST
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small>Made with Nim. Generated: 2020-01-25 15:27:19 UTC</small>
+        <small>Made with Nim. Generated: 2020-01-25 15:33:37 UTC</small>
       </div>
     </div>
   </div>
