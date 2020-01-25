@@ -260,6 +260,8 @@ proc parseFormatChunk(strm: Stream): FormatChunk =
   validate WaveFormatChunkError, "Format chunk", formatChunkId, result.id, "id"
   result.size = strm.readUint32()
   result.format = strm.readUint16()
+  if result.format != WAVE_FORMAT_PCM:
+    raise newException(WaveFormatChunkError, "unknown format: " & $result.format)
   result.nChannels = strm.readUint16()
   result.sampleRate = strm.readUint32()
   result.frameRate = strm.readUint32()
@@ -289,8 +291,8 @@ proc nChannels*(self: WaveRead): uint16 = self.formatChunk.nChannels
 proc sampleRate*(self: WaveRead): uint32 = self.formatChunk.sampleRate
 proc frameRate*(self: WaveRead): uint32 = self.formatChunk.frameRate
 proc nFrames*(self: WaveRead) = discard
-proc compType*(self: WaveRead) = discard
-proc compName*(self: WaveRead) = discard
+# proc compType*(self: WaveRead) = discard
+# proc compName*(self: WaveRead) = discard
 proc params*(self: WaveRead) = discard
 proc readFrames*(self: WaveRead, n: int) = discard
 proc rewind*(self: WaveRead) = discard
