@@ -19,7 +19,7 @@ type
   RiffHeader* = ref object # 12 byte
     id: string # 4byte
     size: uint32 # 4byte
-    rType: string # 4byte
+    typ: string # 4byte
   FormatChunk* = ref object # 24 byte
     id: string # 4byte
     size: uint32 # 4byte
@@ -153,7 +153,7 @@ const
   WAVE_FORMAT_EXTENSIBLE*               =  0xFFFE'u16  ## ？？？？？
 
 proc newRiffHeader*(data: openArray[byte]): RiffHeader =
-  result = RiffHeader(id: "RIFF", size: data.sizeof.uint32, rType: "WAVE")
+  result = RiffHeader(id: "RIFF", size: data.sizeof.uint32, typ: "WAVE")
 
 proc newFormatChunk*(format, nChannels: uint16,
                      sampleRate, frameRate: uint32,
@@ -195,7 +195,7 @@ proc parseRiffHeader*(strm: Stream): RiffHeader =
   result = RiffHeader()
   result.id = strm.readStr(4)
   result.size = strm.readUint32()
-  result.rType = strm.readStr(4)
+  result.typ = strm.readStr(4)
 
 proc parseFormatChunk*(strm: Stream): FormatChunk =
   ## 24 byte
@@ -245,7 +245,7 @@ proc close*(self: WaveWrite) =
   # RIFF header
   outFile.write(head.id)
   outFile.write(head.size)
-  outFile.write(head.rType)
+  outFile.write(head.typ)
 
   # Format chunk
   outFile.write(fmt.id)
