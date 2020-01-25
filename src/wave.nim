@@ -7,35 +7,35 @@
 import os, streams
 
 type
-  Wave = ref object
-    file: File
-    channelsNumber: int
-    framesNumber: int
-  RiffHeader = ref object # 12 byte
-    id: string # 4byte
-    size: uint32 # 4byte
-    rType: string # 4byte
-  FormatChunk = ref object # 24 byte
-    id: string # 4byte
-    size: uint32 # 4byte
-    format: uint16 # 2byte
-    channels: uint16 # 2byte
-    samplerate: uint32 # 4byte
+  Wave* = ref object
+    riffHeader*: RiffHeader
+    formatChunk*: FormatChunk
+    dataChunk*: DataChunk
+  RiffHeader* = ref object # 12 byte
+    id*: string # 4byte
+    size*: uint32 # 4byte
+    rType*: string # 4byte
+  FormatChunk* = ref object # 24 byte
+    id*: string # 4byte
+    size*: uint32 # 4byte
+    format*: uint16 # 2byte
+    channels*: uint16 # 2byte
+    sampleRate*: uint32 # 4byte
       ## 44.1kHz -> 44100
-    bytepersec: uint32 # 4byte
+    bytePerSec*: uint32 # 4byte
       ## 16ビットステレオリニアPCM サンプリングレート44100 -> 44100 * 2 * 2
-    blockalign: uint16 # 2byte
-    bitswidth: uint16 # 2byte
+    blockAlign*: uint16 # 2byte
+    bitsWidth*: uint16 # 2byte
       ## 16ビットリニアPCM -> 16
       ## MS-ADPCM -> 4
-  FormatChunkEx = ref object
-    formatChunk: FormatChunk
-    extendedSize: uint16 # 2byte
-    extended: seq[byte] # n byte
-  DataChunk = ref object
-    id: string ## 4byte 'data'
-    size: uint32 ## 4byte idとsizeを除くデータサイズ
-    waveformData: seq[byte] ## n byte
+  FormatChunkEx* = ref object
+    formatChunk*: FormatChunk
+    extendedSize*: uint16 # 2byte
+    extended*: seq[byte] # n byte
+  DataChunk* = ref object
+    id*: string ## 4byte 'data'
+    size*: uint32 ## 4byte idとsizeを除くデータサイズ
+    data*: seq[byte] ## n byte
 
 const
   WAVE_FORMAT_UNKNOWN                  =  [0x00, 0x00]  #  Microsoft
@@ -145,10 +145,10 @@ const
   WAVE_FORMAT_INTERWAV_VSC112          =  [0x50, 0x71]  #  ?????
   WAVE_FORMAT_EXTENSIBLE               =  [0xFE, 0xFF]  #
 
-proc newRiffHeader(data: seq[byte]): RiffHeader =
+proc newRiffHeader*(data: seq[byte]): RiffHeader =
   result = RiffHeader(id: "RIFF", size: data.sizeof.uint32, rType: "WAVE")
 
-proc newFormatChunk(format, channels: uint16,
+proc newFormatChunk*(format, channels: uint16,
                     sampleRate, bytePerSec: uint32,
                     blockAlign, bitsWidth: uint16): FormatChunk =
   result = FormatChunk(
@@ -156,17 +156,17 @@ proc newFormatChunk(format, channels: uint16,
     size: 16'u32,
     format: format,
     channels: channels,
-    samplerate: sampleRate,
-    bytepersec: bytePerSec,
-    blockalign: blockAlign,
-    bitswidth: bitsWidth,
+    sampleRate: sampleRate,
+    bytePerSec: bytePerSec,
+    blockAlign: blockAlign,
+    bitsWidth: bitsWidth,
   )
 
-proc newDataChunk(waveFormData: seq[byte]): DataChunk =
+proc newDataChunk*(data: seq[byte]): DataChunk =
   result = DataChunk(
     id: "data",
-    size: waveFormData.len.uint32,
-    waveformData: waveFormData,
+    size: data.len.uint32,
+    data: data,
   )
 
 proc openWaveFile*(f: string) =
@@ -200,19 +200,14 @@ proc parseFormatChunk*(strm: Stream): FormatChunk =
   result.size = strm.readUint32()
   result.format = strm.readUint16()
   result.channels = strm.readUint16()
-  result.samplerate = strm.readUint32()
-  result.bytepersec = strm.readUint32()
-  result.blockalign = strm.readUint16()
-  result.bitswidth = strm.readUint16()
+  result.sampleRate = strm.readUint32()
+  result.bytePerSec = strm.readUint32()
+  result.blockAlign = strm.readUint16()
+  result.bitsWidth = strm.readUint16()
 
-proc parseWaveFile*(file: string) =
+proc parseWaveFile*(file: string): Wave =
   var strm = newFileStream(file, fmRead)
   defer: strm.close()
-  # RIFF Header - 12byte
-  var riffHeader = strm.parseRiffHeader()
-  echo riffHeader[]
-  # Format chunk - 24byte
-  var fmtChunk = strm.parseFormatChunk()
-  echo fmtChunk[]
-  # Data chunk - N byte
-  discard
+  result.riffHeader = strm.parseRiffHeader()
+  result.fmtChunk = strm.parseFormatChunk()
+  result.data = strm.parseDataChunk()
