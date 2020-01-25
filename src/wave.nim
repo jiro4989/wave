@@ -193,11 +193,9 @@ proc openWaveFile*(f: string) =
 proc parseRiffHeader*(strm: Stream): RiffHeader =
   ## 12 byte
   result = RiffHeader()
-  for i in 1..4:
-    result.id.add(strm.readChar())
+  result.id = strm.readStr(4)
   result.size = strm.readUint32()
-  for i in 1..4:
-    result.rType.add(strm.readChar())
+  result.rType = strm.readStr(4)
 
 proc parseFormatChunk*(strm: Stream): FormatChunk =
   ## 24 byte
