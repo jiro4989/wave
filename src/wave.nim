@@ -41,6 +41,8 @@ type
     id: string ## 4byte 'data'
     size: uint32 ## 4byte idとsizeを除くデータサイズ
     data: StringStream ## n byte
+  WaveFormatError* = object of CatchableError
+  WaveDataIsEmptyError* = object of CatchableError
 
 const
   WAVE_FORMAT_UNKNOWN*                  =  0x0000'u16  ## Microsoft
@@ -232,21 +234,30 @@ proc openWaveWriteFile*(fileName: string): WaveWrite =
   result.dataChunk = newDataChunk()
 
 proc close*(self: WaveWrite) =
+  let head = self.riffHeader
+  let fmt = self.formatChunk
+
+  if fmt.nChannels == 0: raise newException(WaveFormatError, "'nChannels' is not set")
+  if fmt.sampleRate == 0: raise newException(WaveFormatError, "'sampleRate' is not set")
+  if fmt.frameRate == 0: raise newException(WaveFormatError, "'frameRate' is not set")
+  if fmt.blockAlign == 0: raise newException(WaveFormatError, "'blockAlign' is not set")
+  if self.dataChunk.size == 0: raise newException(WaveDataIsEmptyError, "frames are not set")
+
   var outFile = newFileStream(self.fileName, fmWrite)
   # RIFF header
-  outFile.write(self.riffHeader.id)
-  outFile.write(self.riffHeader.size)
-  outFile.write(self.riffHeader.rType)
+  outFile.write(head.id)
+  outFile.write(head.size)
+  outFile.write(head.rType)
 
   # Format chunk
-  outFile.write(self.formatChunk.id)
-  outFile.write(self.formatChunk.size)
-  outFile.write(self.formatChunk.format)
-  outFile.write(self.formatChunk.nChannels)
-  outFile.write(self.formatChunk.sampleRate)
-  outFile.write(self.formatChunk.frameRate)
-  outFile.write(self.formatChunk.blockAlign)
-  outFile.write(self.formatChunk.bitsWidth)
+  outFile.write(fmt.id)
+  outFile.write(fmt.size)
+  outFile.write(fmt.format)
+  outFile.write(fmt.nChannels)
+  outFile.write(fmt.sampleRate)
+  outFile.write(fmt.frameRate)
+  outFile.write(fmt.blockAlign)
+  outFile.write(fmt.bitsWidth)
 
   # Data chunk
   outFile.write(self.dataChunk.id)
