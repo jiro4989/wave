@@ -286,7 +286,7 @@ proc openWaveReadFile*(file: string): WaveRead =
 
 proc close*(self: WaveRead) = discard
 proc nChannels*(self: WaveRead): uint16 = self.formatChunk.nChannels
-proc sampleRate*(self: WaveRead) = discard
+proc sampleRate*(self: WaveRead): uint32 = self.formatChunk.sampleRate
 proc frameRate*(self: WaveRead) = discard
 proc nFrames*(self: WaveRead) = discard
 proc compType*(self: WaveRead) = discard
