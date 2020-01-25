@@ -862,9 +862,13 @@ function main() {
     title="DataChunk = ref object
   id: string                   ## 4byte &apos;data&apos;
   size: uint32                 ## 4byte idとsizeを除くデータサイズ
-  data: StringStream           ## n byte"><wbr />Data<wbr />Chunk<span class="attachedType"></span></a></li>
-  <li><a class="reference" href="#WaveFormatError"
-    title="WaveFormatError = object of CatchableError"><wbr />Wave<wbr />Format<wbr />Error<span class="attachedType"></span></a></li>
+  data: Stream                 ## n byte"><wbr />Data<wbr />Chunk<span class="attachedType"></span></a></li>
+  <li><a class="reference" href="#WaveRiffHeaderError"
+    title="WaveRiffHeaderError = object of CatchableError"><wbr />Wave<wbr />Riff<wbr />Header<wbr />Error<span class="attachedType"></span></a></li>
+  <li><a class="reference" href="#WaveFormatChunkError"
+    title="WaveFormatChunkError = object of CatchableError"><wbr />Wave<wbr />Format<wbr />Chunk<wbr />Error<span class="attachedType"></span></a></li>
+  <li><a class="reference" href="#WaveDataChunkError"
+    title="WaveDataChunkError = object of CatchableError"><wbr />Wave<wbr />Data<wbr />Chunk<wbr />Error<span class="attachedType"></span></a></li>
   <li><a class="reference" href="#WaveDataIsEmptyError"
     title="WaveDataIsEmptyError = object of CatchableError"><wbr />Wave<wbr />Data<wbr />Is<wbr />Empty<wbr />Error<span class="attachedType"></span></a></li>
 
@@ -873,7 +877,33 @@ function main() {
 <li>
   <a class="reference reference-toplevel" href="#10" id="60">Consts</a>
   <ul class="simple simple-toc-section">
-      <li><a class="reference" href="#WAVE_FORMAT_UNKNOWN"
+      <li><a class="reference" href="#riffHeaderId"
+    title="riffHeaderId = &quot;RIFF&quot;"><wbr />riff<wbr />Header<wbr />Id<span class="attachedType"></span></a></li>
+  <li><a class="reference" href="#riffHeaderType"
+    title="riffHeaderType = &quot;WAVE&quot;"><wbr />riff<wbr />Header<wbr />Type<span class="attachedType"></span></a></li>
+  <li><a class="reference" href="#formatChunkId"
+    title="formatChunkId = &quot;fmt &quot;"><wbr />format<wbr />Chunk<wbr />Id<span class="attachedType"></span></a></li>
+  <li><a class="reference" href="#dataChunkId"
+    title="dataChunkId = &quot;data&quot;"><wbr />data<wbr />Chunk<wbr />Id<span class="attachedType"></span></a></li>
+  <li><a class="reference" href="#factChunkId"
+    title="factChunkId = &quot;fact&quot;"><wbr />fact<wbr />Chunk<wbr />Id<span class="attachedType"></span></a></li>
+  <li><a class="reference" href="#cueChunkId"
+    title="cueChunkId = &quot;cue &quot;"><wbr />cue<wbr />Chunk<wbr />Id<span class="attachedType"></span></a></li>
+  <li><a class="reference" href="#plstChunkId"
+    title="plstChunkId = &quot;plst&quot;"><wbr />plst<wbr />Chunk<wbr />Id<span class="attachedType"></span></a></li>
+  <li><a class="reference" href="#listChunkId"
+    title="listChunkId = &quot;list&quot;"><wbr />list<wbr />Chunk<wbr />Id<span class="attachedType"></span></a></li>
+  <li><a class="reference" href="#lablChunkId"
+    title="lablChunkId = &quot;labl&quot;"><wbr />labl<wbr />Chunk<wbr />Id<span class="attachedType"></span></a></li>
+  <li><a class="reference" href="#noteChunkId"
+    title="noteChunkId = &quot;note&quot;"><wbr />note<wbr />Chunk<wbr />Id<span class="attachedType"></span></a></li>
+  <li><a class="reference" href="#ltxtChunkId"
+    title="ltxtChunkId = &quot;ltxt&quot;"><wbr />ltxt<wbr />Chunk<wbr />Id<span class="attachedType"></span></a></li>
+  <li><a class="reference" href="#smplChunkId"
+    title="smplChunkId = &quot;smpl&quot;"><wbr />smpl<wbr />Chunk<wbr />Id<span class="attachedType"></span></a></li>
+  <li><a class="reference" href="#instChunkId"
+    title="instChunkId = &quot;inst&quot;"><wbr />inst<wbr />Chunk<wbr />Id<span class="attachedType"></span></a></li>
+  <li><a class="reference" href="#WAVE_FORMAT_UNKNOWN"
     title="WAVE_FORMAT_UNKNOWN = 0x0000&apos;u16"><wbr />WAVE_<wbr />FORMAT_<wbr />UNKNOWN<span class="attachedType"></span></a></li>
   <li><a class="reference" href="#WAVE_FORMAT_PCM"
     title="WAVE_FORMAT_PCM = 0x0001&apos;u16"><wbr />WAVE_<wbr />FORMAT_<wbr />PCM<span class="attachedType"></span></a></li>
@@ -1096,17 +1126,13 @@ function main() {
   <li><a class="reference" href="#close%2CWaveRead"
     title="close(self: WaveRead)"><wbr />close<span class="attachedType">WaveRead</span></a></li>
   <li><a class="reference" href="#nChannels%2CWaveRead"
-    title="nChannels(self: WaveRead)"><wbr />n<wbr />Channels<span class="attachedType">WaveRead</span></a></li>
+    title="nChannels(self: WaveRead): uint16"><wbr />n<wbr />Channels<span class="attachedType">WaveRead</span></a></li>
   <li><a class="reference" href="#sampleRate%2CWaveRead"
-    title="sampleRate(self: WaveRead)"><wbr />sample<wbr />Rate<span class="attachedType">WaveRead</span></a></li>
+    title="sampleRate(self: WaveRead): uint32"><wbr />sample<wbr />Rate<span class="attachedType">WaveRead</span></a></li>
   <li><a class="reference" href="#frameRate%2CWaveRead"
-    title="frameRate(self: WaveRead)"><wbr />frame<wbr />Rate<span class="attachedType">WaveRead</span></a></li>
+    title="frameRate(self: WaveRead): uint32"><wbr />frame<wbr />Rate<span class="attachedType">WaveRead</span></a></li>
   <li><a class="reference" href="#nFrames%2CWaveRead"
     title="nFrames(self: WaveRead)"><wbr />n<wbr />Frames<span class="attachedType">WaveRead</span></a></li>
-  <li><a class="reference" href="#compType%2CWaveRead"
-    title="compType(self: WaveRead)"><wbr />comp<wbr />Type<span class="attachedType">WaveRead</span></a></li>
-  <li><a class="reference" href="#compName%2CWaveRead"
-    title="compName(self: WaveRead)"><wbr />comp<wbr />Name<span class="attachedType">WaveRead</span></a></li>
   <li><a class="reference" href="#params%2CWaveRead"
     title="params(self: WaveRead)"><wbr />params<span class="attachedType">WaveRead</span></a></li>
   <li><a class="reference" href="#readFrames%2CWaveRead%2Cint"
@@ -1252,15 +1278,29 @@ function main() {
 <dt><pre><a href="wave.html#DataChunk"><span class="Identifier">DataChunk</span></a> <span class="Other">=</span> <span class="Keyword">ref</span> <span class="Keyword">object</span>
   <span class="Identifier">id</span><span class="Other">:</span> <span class="Identifier">string</span>                   <span class="Comment">## 4byte 'data'</span>
   <span class="Identifier">size</span><span class="Other">:</span> <span class="Identifier">uint32</span>                 <span class="Comment">## 4byte idとsizeを除くデータサイズ</span>
-  <span class="Identifier">data</span><span class="Other">:</span> <span class="Identifier">StringStream</span>           <span class="Comment">## n byte</span>
+  <span class="Identifier">data</span><span class="Other">:</span> <span class="Identifier">Stream</span>                 <span class="Comment">## n byte</span>
   </pre></dt>
 <dd>
 
 
 
 </dd>
-<a id="WaveFormatError"></a>
-<dt><pre><a href="wave.html#WaveFormatError"><span class="Identifier">WaveFormatError</span></a> <span class="Other">=</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <span class="Identifier">CatchableError</span></pre></dt>
+<a id="WaveRiffHeaderError"></a>
+<dt><pre><a href="wave.html#WaveRiffHeaderError"><span class="Identifier">WaveRiffHeaderError</span></a> <span class="Other">=</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <span class="Identifier">CatchableError</span></pre></dt>
+<dd>
+
+
+
+</dd>
+<a id="WaveFormatChunkError"></a>
+<dt><pre><a href="wave.html#WaveFormatChunkError"><span class="Identifier">WaveFormatChunkError</span></a> <span class="Other">=</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <span class="Identifier">CatchableError</span></pre></dt>
+<dd>
+
+
+
+</dd>
+<a id="WaveDataChunkError"></a>
+<dt><pre><a href="wave.html#WaveDataChunkError"><span class="Identifier">WaveDataChunkError</span></a> <span class="Other">=</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <span class="Identifier">CatchableError</span></pre></dt>
 <dd>
 
 
@@ -1278,6 +1318,97 @@ function main() {
 <div class="section" id="10">
 <h1><a class="toc-backref" href="#10">Consts</a></h1>
 <dl class="item">
+<a id="riffHeaderId"></a>
+<dt><pre><a href="wave.html#riffHeaderId"><span class="Identifier">riffHeaderId</span></a> <span class="Other">=</span> <span class="StringLit">&quot;RIFF&quot;</span></pre></dt>
+<dd>
+
+
+
+</dd>
+<a id="riffHeaderType"></a>
+<dt><pre><a href="wave.html#riffHeaderType"><span class="Identifier">riffHeaderType</span></a> <span class="Other">=</span> <span class="StringLit">&quot;WAVE&quot;</span></pre></dt>
+<dd>
+
+
+
+</dd>
+<a id="formatChunkId"></a>
+<dt><pre><a href="wave.html#formatChunkId"><span class="Identifier">formatChunkId</span></a> <span class="Other">=</span> <span class="StringLit">&quot;fmt &quot;</span></pre></dt>
+<dd>
+
+
+
+</dd>
+<a id="dataChunkId"></a>
+<dt><pre><a href="wave.html#dataChunkId"><span class="Identifier">dataChunkId</span></a> <span class="Other">=</span> <span class="StringLit">&quot;data&quot;</span></pre></dt>
+<dd>
+
+
+
+</dd>
+<a id="factChunkId"></a>
+<dt><pre><a href="wave.html#factChunkId"><span class="Identifier">factChunkId</span></a> <span class="Other">=</span> <span class="StringLit">&quot;fact&quot;</span></pre></dt>
+<dd>
+
+
+
+</dd>
+<a id="cueChunkId"></a>
+<dt><pre><a href="wave.html#cueChunkId"><span class="Identifier">cueChunkId</span></a> <span class="Other">=</span> <span class="StringLit">&quot;cue &quot;</span></pre></dt>
+<dd>
+
+
+
+</dd>
+<a id="plstChunkId"></a>
+<dt><pre><a href="wave.html#plstChunkId"><span class="Identifier">plstChunkId</span></a> <span class="Other">=</span> <span class="StringLit">&quot;plst&quot;</span></pre></dt>
+<dd>
+
+
+
+</dd>
+<a id="listChunkId"></a>
+<dt><pre><a href="wave.html#listChunkId"><span class="Identifier">listChunkId</span></a> <span class="Other">=</span> <span class="StringLit">&quot;list&quot;</span></pre></dt>
+<dd>
+
+
+
+</dd>
+<a id="lablChunkId"></a>
+<dt><pre><a href="wave.html#lablChunkId"><span class="Identifier">lablChunkId</span></a> <span class="Other">=</span> <span class="StringLit">&quot;labl&quot;</span></pre></dt>
+<dd>
+
+
+
+</dd>
+<a id="noteChunkId"></a>
+<dt><pre><a href="wave.html#noteChunkId"><span class="Identifier">noteChunkId</span></a> <span class="Other">=</span> <span class="StringLit">&quot;note&quot;</span></pre></dt>
+<dd>
+
+
+
+</dd>
+<a id="ltxtChunkId"></a>
+<dt><pre><a href="wave.html#ltxtChunkId"><span class="Identifier">ltxtChunkId</span></a> <span class="Other">=</span> <span class="StringLit">&quot;ltxt&quot;</span></pre></dt>
+<dd>
+
+
+
+</dd>
+<a id="smplChunkId"></a>
+<dt><pre><a href="wave.html#smplChunkId"><span class="Identifier">smplChunkId</span></a> <span class="Other">=</span> <span class="StringLit">&quot;smpl&quot;</span></pre></dt>
+<dd>
+
+
+
+</dd>
+<a id="instChunkId"></a>
+<dt><pre><a href="wave.html#instChunkId"><span class="Identifier">instChunkId</span></a> <span class="Other">=</span> <span class="StringLit">&quot;inst&quot;</span></pre></dt>
+<dd>
+
+
+
+</dd>
 <a id="WAVE_FORMAT_UNKNOWN"></a>
 <dt><pre><a href="wave.html#WAVE_FORMAT_UNKNOWN"><span class="Identifier">WAVE_FORMAT_UNKNOWN</span></a> <span class="Other">=</span> <span class="DecNumber">0x0000'u16</span></pre></dt>
 <dd>
@@ -2026,9 +2157,8 @@ FAST
 <h1><a class="toc-backref" href="#12">Procs</a></h1>
 <dl class="item">
 <a id="openWaveReadFile,string"></a>
-<dt><pre><span class="Keyword">proc</span> <a href="#openWaveReadFile%2Cstring"><span class="Identifier">openWaveReadFile</span></a><span class="Other">(</span><span class="Identifier">file</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span><span class="Other">:</span> <a href="wave.html#WaveRead"><span class="Identifier">WaveRead</span></a> <span><span class="Other">{</span><span class="Other pragmadots">...</span><span class="Other">}</span></span><span class="pragmawrap"><span class="Other">{.</span><span class="pragma">
-    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">,</span> <span class="Identifier">IOError</span><span class="Other">,</span> <span class="Identifier">OSError</span><span class="Other">,</span> <span class="Identifier">Defect</span><span class="Other">]</span><span class="Other">,</span>
-    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">WriteIOEffect</span><span class="Other">,</span> <span class="Identifier">ReadIOEffect</span><span class="Other">]</span></span><span class="Other">.}</span></span></pre></dt>
+<dt><pre><span class="Keyword">proc</span> <a href="#openWaveReadFile%2Cstring"><span class="Identifier">openWaveReadFile</span></a><span class="Other">(</span><span class="Identifier">file</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span><span class="Other">:</span> <a href="wave.html#WaveRead"><span class="Identifier">WaveRead</span></a> <span><span class="Other">{</span><span class="Other pragmadots">...</span><span class="Other">}</span></span><span class="pragmawrap"><span class="Other">{.</span><span class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Defect</span><span class="Other">,</span> <span class="Identifier">IOError</span><span class="Other">,</span> <span class="Identifier">OSError</span><span class="Other">,</span>
+    <span class="Identifier">WaveRiffHeaderError</span><span class="Other">,</span> <span class="Identifier">WaveFormatChunkError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ReadIOEffect</span><span class="Other">]</span></span><span class="Other">.}</span></span></pre></dt>
 <dd>
 
 
@@ -2042,21 +2172,21 @@ FAST
 
 </dd>
 <a id="nChannels,WaveRead"></a>
-<dt><pre><span class="Keyword">proc</span> <a href="#nChannels%2CWaveRead"><span class="Identifier">nChannels</span></a><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="wave.html#WaveRead"><span class="Identifier">WaveRead</span></a><span class="Other">)</span> <span><span class="Other">{</span><span class="Other pragmadots">...</span><span class="Other">}</span></span><span class="pragmawrap"><span class="Other">{.</span><span class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span><span class="Other">.}</span></span></pre></dt>
+<dt><pre><span class="Keyword">proc</span> <a href="#nChannels%2CWaveRead"><span class="Identifier">nChannels</span></a><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="wave.html#WaveRead"><span class="Identifier">WaveRead</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">uint16</span> <span><span class="Other">{</span><span class="Other pragmadots">...</span><span class="Other">}</span></span><span class="pragmawrap"><span class="Other">{.</span><span class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span><span class="Other">.}</span></span></pre></dt>
 <dd>
 
 
 
 </dd>
 <a id="sampleRate,WaveRead"></a>
-<dt><pre><span class="Keyword">proc</span> <a href="#sampleRate%2CWaveRead"><span class="Identifier">sampleRate</span></a><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="wave.html#WaveRead"><span class="Identifier">WaveRead</span></a><span class="Other">)</span> <span><span class="Other">{</span><span class="Other pragmadots">...</span><span class="Other">}</span></span><span class="pragmawrap"><span class="Other">{.</span><span class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span><span class="Other">.}</span></span></pre></dt>
+<dt><pre><span class="Keyword">proc</span> <a href="#sampleRate%2CWaveRead"><span class="Identifier">sampleRate</span></a><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="wave.html#WaveRead"><span class="Identifier">WaveRead</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">uint32</span> <span><span class="Other">{</span><span class="Other pragmadots">...</span><span class="Other">}</span></span><span class="pragmawrap"><span class="Other">{.</span><span class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span><span class="Other">.}</span></span></pre></dt>
 <dd>
 
 
 
 </dd>
 <a id="frameRate,WaveRead"></a>
-<dt><pre><span class="Keyword">proc</span> <a href="#frameRate%2CWaveRead"><span class="Identifier">frameRate</span></a><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="wave.html#WaveRead"><span class="Identifier">WaveRead</span></a><span class="Other">)</span> <span><span class="Other">{</span><span class="Other pragmadots">...</span><span class="Other">}</span></span><span class="pragmawrap"><span class="Other">{.</span><span class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span><span class="Other">.}</span></span></pre></dt>
+<dt><pre><span class="Keyword">proc</span> <a href="#frameRate%2CWaveRead"><span class="Identifier">frameRate</span></a><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="wave.html#WaveRead"><span class="Identifier">WaveRead</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">uint32</span> <span><span class="Other">{</span><span class="Other pragmadots">...</span><span class="Other">}</span></span><span class="pragmawrap"><span class="Other">{.</span><span class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span><span class="Other">.}</span></span></pre></dt>
 <dd>
 
 
@@ -2064,20 +2194,6 @@ FAST
 </dd>
 <a id="nFrames,WaveRead"></a>
 <dt><pre><span class="Keyword">proc</span> <a href="#nFrames%2CWaveRead"><span class="Identifier">nFrames</span></a><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="wave.html#WaveRead"><span class="Identifier">WaveRead</span></a><span class="Other">)</span> <span><span class="Other">{</span><span class="Other pragmadots">...</span><span class="Other">}</span></span><span class="pragmawrap"><span class="Other">{.</span><span class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span><span class="Other">.}</span></span></pre></dt>
-<dd>
-
-
-
-</dd>
-<a id="compType,WaveRead"></a>
-<dt><pre><span class="Keyword">proc</span> <a href="#compType%2CWaveRead"><span class="Identifier">compType</span></a><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="wave.html#WaveRead"><span class="Identifier">WaveRead</span></a><span class="Other">)</span> <span><span class="Other">{</span><span class="Other pragmadots">...</span><span class="Other">}</span></span><span class="pragmawrap"><span class="Other">{.</span><span class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span><span class="Other">.}</span></span></pre></dt>
-<dd>
-
-
-
-</dd>
-<a id="compName,WaveRead"></a>
-<dt><pre><span class="Keyword">proc</span> <a href="#compName%2CWaveRead"><span class="Identifier">compName</span></a><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="wave.html#WaveRead"><span class="Identifier">WaveRead</span></a><span class="Other">)</span> <span><span class="Other">{</span><span class="Other pragmadots">...</span><span class="Other">}</span></span><span class="pragmawrap"><span class="Other">{.</span><span class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span><span class="Other">.}</span></span></pre></dt>
 <dd>
 
 
@@ -2126,8 +2242,8 @@ FAST
 
 </dd>
 <a id="close,WaveWrite"></a>
-<dt><pre><span class="Keyword">proc</span> <a href="#close%2CWaveWrite"><span class="Identifier">close</span></a><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="wave.html#WaveWrite"><span class="Identifier">WaveWrite</span></a><span class="Other">)</span> <span><span class="Other">{</span><span class="Other pragmadots">...</span><span class="Other">}</span></span><span class="pragmawrap"><span class="Other">{.</span><span class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">WaveFormatError</span><span class="Other">,</span> <span class="Identifier">WaveDataIsEmptyError</span><span class="Other">,</span> <span class="Identifier">Defect</span><span class="Other">,</span>
-                                   <span class="Identifier">IOError</span><span class="Other">,</span> <span class="Identifier">OSError</span><span class="Other">,</span> <span class="Identifier">Exception</span><span class="Other">]</span><span class="Other">,</span>
+<dt><pre><span class="Keyword">proc</span> <a href="#close%2CWaveWrite"><span class="Identifier">close</span></a><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="wave.html#WaveWrite"><span class="Identifier">WaveWrite</span></a><span class="Other">)</span> <span><span class="Other">{</span><span class="Other pragmadots">...</span><span class="Other">}</span></span><span class="pragmawrap"><span class="Other">{.</span><span class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">WaveFormatChunkError</span><span class="Other">,</span> <span class="Identifier">WaveDataIsEmptyError</span><span class="Other">,</span>
+                                   <span class="Identifier">Defect</span><span class="Other">,</span> <span class="Identifier">IOError</span><span class="Other">,</span> <span class="Identifier">OSError</span><span class="Other">,</span> <span class="Identifier">Exception</span><span class="Other">]</span><span class="Other">,</span>
                            <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">WriteIOEffect</span><span class="Other">,</span> <span class="Identifier">ReadIOEffect</span><span class="Other">]</span></span><span class="Other">.}</span></span></pre></dt>
 <dd>
 
@@ -2215,7 +2331,7 @@ FAST
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small>Made with Nim. Generated: 2020-01-25 15:33:37 UTC</small>
+        <small>Made with Nim. Generated: 2020-01-25 16:43:54 UTC</small>
       </div>
     </div>
   </div>

@@ -6,8 +6,23 @@ WaveWrite	wave.html#WaveWrite	wave: WaveWrite
 RiffHeader	wave.html#RiffHeader	wave: RiffHeader	
 FormatChunk	wave.html#FormatChunk	wave: FormatChunk	
 DataChunk	wave.html#DataChunk	wave: DataChunk	
-WaveFormatError	wave.html#WaveFormatError	wave: WaveFormatError	
+WaveRiffHeaderError	wave.html#WaveRiffHeaderError	wave: WaveRiffHeaderError	
+WaveFormatChunkError	wave.html#WaveFormatChunkError	wave: WaveFormatChunkError	
+WaveDataChunkError	wave.html#WaveDataChunkError	wave: WaveDataChunkError	
 WaveDataIsEmptyError	wave.html#WaveDataIsEmptyError	wave: WaveDataIsEmptyError	
+riffHeaderId	wave.html#riffHeaderId	wave: riffHeaderId	
+riffHeaderType	wave.html#riffHeaderType	wave: riffHeaderType	
+formatChunkId	wave.html#formatChunkId	wave: formatChunkId	
+dataChunkId	wave.html#dataChunkId	wave: dataChunkId	
+factChunkId	wave.html#factChunkId	wave: factChunkId	
+cueChunkId	wave.html#cueChunkId	wave: cueChunkId	
+plstChunkId	wave.html#plstChunkId	wave: plstChunkId	
+listChunkId	wave.html#listChunkId	wave: listChunkId	
+lablChunkId	wave.html#lablChunkId	wave: lablChunkId	
+noteChunkId	wave.html#noteChunkId	wave: noteChunkId	
+ltxtChunkId	wave.html#ltxtChunkId	wave: ltxtChunkId	
+smplChunkId	wave.html#smplChunkId	wave: smplChunkId	
+instChunkId	wave.html#instChunkId	wave: instChunkId	
 WAVE_FORMAT_UNKNOWN	wave.html#WAVE_FORMAT_UNKNOWN	wave: WAVE_FORMAT_UNKNOWN	
 WAVE_FORMAT_PCM	wave.html#WAVE_FORMAT_PCM	wave: WAVE_FORMAT_PCM	
 WAVE_FORMAT_MS_ADPCM	wave.html#WAVE_FORMAT_MS_ADPCM	wave: WAVE_FORMAT_MS_ADPCM	
@@ -116,12 +131,10 @@ WAVE_FORMAT_INTERWAV_VSC112	wave.html#WAVE_FORMAT_INTERWAV_VSC112	wave: WAVE_FOR
 WAVE_FORMAT_EXTENSIBLE	wave.html#WAVE_FORMAT_EXTENSIBLE	wave: WAVE_FORMAT_EXTENSIBLE	
 openWaveReadFile	wave.html#openWaveReadFile,string	wave: openWaveReadFile(file: string): WaveRead	
 close	wave.html#close,WaveRead	wave: close(self: WaveRead)	
-nChannels	wave.html#nChannels,WaveRead	wave: nChannels(self: WaveRead)	
-sampleRate	wave.html#sampleRate,WaveRead	wave: sampleRate(self: WaveRead)	
-frameRate	wave.html#frameRate,WaveRead	wave: frameRate(self: WaveRead)	
+nChannels	wave.html#nChannels,WaveRead	wave: nChannels(self: WaveRead): uint16	
+sampleRate	wave.html#sampleRate,WaveRead	wave: sampleRate(self: WaveRead): uint32	
+frameRate	wave.html#frameRate,WaveRead	wave: frameRate(self: WaveRead): uint32	
 nFrames	wave.html#nFrames,WaveRead	wave: nFrames(self: WaveRead)	
-compType	wave.html#compType,WaveRead	wave: compType(self: WaveRead)	
-compName	wave.html#compName,WaveRead	wave: compName(self: WaveRead)	
 params	wave.html#params,WaveRead	wave: params(self: WaveRead)	
 readFrames	wave.html#readFrames,WaveRead,int	wave: readFrames(self: WaveRead; n: int)	
 rewind	wave.html#rewind,WaveRead	wave: rewind(self: WaveRead)	
