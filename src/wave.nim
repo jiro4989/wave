@@ -216,8 +216,3 @@ proc parseWaveFile*(file: string) =
   echo fmtChunk[]
   # Data chunk - N byte
   discard
-
-# def openfp(f, mode=None):
-#     warnings.warn("wave.openfp is deprecated since Python 3.7. "
-#                   "Use wave.open instead.", DeprecationWarning, stacklevel=2)
-#     return open(f, mode=mode)
