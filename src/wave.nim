@@ -96,6 +96,15 @@ const
   riffHeaderType* = "WAVE"
   formatChunkId* = "fmt "
   dataChunkId* = "data"
+  factChunkId* = "fact"
+  cueChunkId* = "cue "
+  plstChunkId* = "plst"
+  listChunkId* = "list"
+  lablChunkId* = "labl"
+  noteChunkId* = "note"
+  ltxtChunkId* = "ltxt"
+  smplChunkId* = "smpl"
+  instChunkId* = "inst"
 
 const
   WAVE_FORMAT_UNKNOWN*                  =  0x0000'u16  ## Microsoft
@@ -264,7 +273,7 @@ proc parseFormatChunk(strm: Stream): FormatChunk =
 proc parseDataChunk(strm: Stream): DataChunk =
   result = DataChunk()
   result.id = strm.readStr(4)
-  validate WaveDataChunkError, "Data chunk", dataChunkId, result.id, "id"
+  #validate WaveDataChunkError, "Data chunk", dataChunkId, result.id, "id"
   result.size = strm.readUint32()
   result.data = strm
 
