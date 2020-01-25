@@ -27,7 +27,7 @@ type
     nChannels: uint16 # 2byte
     sampleRate: uint32 # 4byte
       ## 44.1kHz -> 44100
-    bytePerSec: uint32 # 4byte
+    frameRate: uint32 # 4byte
       ## 16ビットステレオリニアPCM サンプリングレート44100 -> 44100 * 2 * 2
     blockAlign: uint16 # 2byte
     bitsWidth: uint16 # 2byte
@@ -154,7 +154,7 @@ proc newRiffHeader*(data: openArray[byte]): RiffHeader =
   result = RiffHeader(id: "RIFF", size: data.sizeof.uint32, rType: "WAVE")
 
 proc newFormatChunk*(format, nChannels: uint16,
-                     sampleRate, bytePerSec: uint32,
+                     sampleRate, frameRate: uint32,
                      blockAlign, bitsWidth: uint16): FormatChunk =
   result = FormatChunk(
     id: "fmt ",
@@ -162,7 +162,7 @@ proc newFormatChunk*(format, nChannels: uint16,
     format: format,
     nChannels: nChannels,
     sampleRate: sampleRate,
-    bytePerSec: bytePerSec,
+    frameRate: frameRate,
     blockAlign: blockAlign,
     bitsWidth: bitsWidth,
   )
@@ -206,7 +206,7 @@ proc parseFormatChunk*(strm: Stream): FormatChunk =
   result.format = strm.readUint16()
   result.nChannels = strm.readUint16()
   result.sampleRate = strm.readUint32()
-  result.bytePerSec = strm.readUint32()
+  result.frameRate = strm.readUint32()
   result.blockAlign = strm.readUint16()
   result.bitsWidth = strm.readUint16()
 
@@ -225,7 +225,7 @@ proc openWaveWriteFile*(fileName: string): WaveWrite =
     format=WAVE_FORMAT_PCM,
     nChannels=0'u16,
     sampleRate=0'u32,
-    bytePerSec=0'u32,
+    frameRate=0'u32,
     blockAlign=0'u16,
     bitsWidth=8'u16,
   )
@@ -244,7 +244,7 @@ proc close*(self: WaveWrite) =
   outFile.write(self.formatChunk.format)
   outFile.write(self.formatChunk.nChannels)
   outFile.write(self.formatChunk.sampleRate)
-  outFile.write(self.formatChunk.bytePerSec)
+  outFile.write(self.formatChunk.frameRate)
   outFile.write(self.formatChunk.blockAlign)
   outFile.write(self.formatChunk.bitsWidth)
 
@@ -274,8 +274,8 @@ proc `nChannels=`*(self: var WaveWrite, nChannels: uint16) =
 proc `sampleRate=`*(self: var WaveWrite, sampleRate: uint16) =
   self.formatChunk.sampleRate = sampleRate
 
-proc `bytePerSec=`*(self: var WaveWrite, bytePerSec: uint32) =
-  self.formatChunk.bytePerSec = bytePerSec
+proc `frameRate=`*(self: var WaveWrite, frameRate: uint32) =
+  self.formatChunk.frameRate = frameRate
 
 proc `blockAlign=`*(self: var WaveWrite, blockAlign: uint16) =
   self.formatChunk.blockAlign = blockAlign
