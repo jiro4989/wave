@@ -270,11 +270,12 @@ proc close*(self: WaveWrite) =
     let writtenSize = self.dataChunk.data.readData(addr(buffer), bufSize)
     if writtenSize == bufSize:
       outFile.write(buffer)
-    else:
+    elif 0 < writtenSize:
       for i in 0..<writtenSize:
         outFile.write(buffer[i])
-    if self.dataChunk.data.atEnd:
-      break
+    else:
+      if self.dataChunk.data.atEnd:
+        break
 
   outFile.close()
   self.dataChunk.data.close()
