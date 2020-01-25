@@ -85,9 +85,17 @@ type
   DataChunk* = ref object
     id: string ## 4byte 'data'
     size: uint32 ## 4byte idとsizeを除くデータサイズ
-    data: StringStream ## n byte
-  WaveFormatError* = object of CatchableError
+    data: Stream ## n byte
+  WaveRiffHeaderError* = object of CatchableError
+  WaveFormatChunkError* = object of CatchableError
+  WaveDataChunkError* = object of CatchableError
   WaveDataIsEmptyError* = object of CatchableError
+
+const
+  riffHeaderId* = "RIFF"
+  riffHeaderType* = "WAVE"
+  formatChunkId* = "fmt "
+  dataChunkId* = "data"
 
 const
   WAVE_FORMAT_UNKNOWN*                  =  0x0000'u16  ## Microsoft
@@ -198,13 +206,13 @@ const
   WAVE_FORMAT_EXTENSIBLE*               =  0xFFFE'u16  ## ？？？？？
 
 proc newRiffHeader(data: openArray[byte]): RiffHeader =
-  result = RiffHeader(id: "RIFF", size: data.sizeof.uint32, typ: "WAVE")
+  result = RiffHeader(id: riffHeaderId, size: data.sizeof.uint32, typ: riffHeaderType)
 
 proc newFormatChunk(format, nChannels: uint16,
                      sampleRate, frameRate: uint32,
                      blockAlign, bitsWidth: uint16): FormatChunk =
   result = FormatChunk(
-    id: "fmt ",
+    id: formatChunkId,
     size: 16'u32,
     format: format,
     nChannels: nChannels,
@@ -216,22 +224,31 @@ proc newFormatChunk(format, nChannels: uint16,
 
 proc newDataChunk(): DataChunk =
   result = DataChunk(
-    id: "data",
+    id: dataChunkId,
     size: 0'u32,
     data: newStringStream(),
   )
 
+template validate(T: typedesc, prefix, want, got, key: string) =
+  if want != got:
+    let msg = "illegal " & prefix & " " & key & ". (" & key & " = '" & got & "')"
+    raise newException(T, msg)
+
 proc parseRiffHeader(strm: Stream): RiffHeader =
   ## 12 byte
   result = RiffHeader()
+
   result.id = strm.readStr(4)
+  validate WaveRiffHeaderError, "RIFF Header", riffHeaderId, result.id, "id"
   result.size = strm.readUint32()
   result.typ = strm.readStr(4)
+  validate WaveRiffHeaderError, "RIFF Header", riffHeaderType, result.typ, "typ"
 
 proc parseFormatChunk(strm: Stream): FormatChunk =
   ## 24 byte
   result = FormatChunk()
   result.id = strm.readStr(4)
+  validate WaveFormatChunkError, "Format chunk", formatChunkId, result.id, "id"
   result.size = strm.readUint32()
   result.format = strm.readUint16()
   result.nChannels = strm.readUint16()
@@ -244,13 +261,19 @@ proc parseFormatChunk(strm: Stream): FormatChunk =
     for i in 0'u16 ..< result.extendedSize:
       result.extended.add(strm.readUint8())
 
+proc parseDataChunk(strm: Stream): DataChunk =
+  result = DataChunk()
+  result.id = strm.readStr(4)
+  validate WaveDataChunkError, "Data chunk", dataChunkId, result.id, "id"
+  result.size = strm.readUint32()
+  result.data = strm
+
 proc openWaveReadFile*(file: string): WaveRead =
   var strm = newFileStream(file, fmRead)
-  defer: strm.close()
   result = WaveRead()
   result.riffHeader = strm.parseRiffHeader()
   result.formatChunk = strm.parseFormatChunk()
-  # result.data = strm.parseDataChunk()
+  result.dataChunk = strm.parseDataChunk()
 
 proc close*(self: WaveRead) = discard
 proc nChannels*(self: WaveRead) = discard
@@ -283,10 +306,10 @@ proc close*(self: WaveWrite) =
   let head = self.riffHeader
   let fmt = self.formatChunk
 
-  if fmt.nChannels == 0: raise newException(WaveFormatError, "'nChannels' is not set")
-  if fmt.sampleRate == 0: raise newException(WaveFormatError, "'sampleRate' is not set")
-  if fmt.frameRate == 0: raise newException(WaveFormatError, "'frameRate' is not set")
-  if fmt.blockAlign == 0: raise newException(WaveFormatError, "'blockAlign' is not set")
+  if fmt.nChannels == 0: raise newException(WaveFormatChunkError, "'nChannels' is not set")
+  if fmt.sampleRate == 0: raise newException(WaveFormatChunkError, "'sampleRate' is not set")
+  if fmt.frameRate == 0: raise newException(WaveFormatChunkError, "'frameRate' is not set")
+  if fmt.blockAlign == 0: raise newException(WaveFormatChunkError, "'blockAlign' is not set")
   if self.dataChunk.size == 0: raise newException(WaveDataIsEmptyError, "frames are not set")
 
   var outFile = newFileStream(self.fileName, fmWrite)
