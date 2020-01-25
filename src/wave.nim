@@ -8,39 +8,45 @@ import os, streams
 
 type
   Wave* = ref object
-    riffHeader*: RiffHeader
-    formatChunk*: FormatChunk
-    dataChunk*: DataChunk
+    riffHeader: RiffHeader
+    formatChunk: FormatChunk
+    dataChunk: DataChunk
+  WaveWrite* = ref object
+    riffHeader: RiffHeader
+    formatChunk: FormatChunk
+    fileName: string
+    stream: StringStream
+    dataSize: uint32
   RiffHeader* = ref object # 12 byte
-    id*: string # 4byte
-    size*: uint32 # 4byte
-    rType*: string # 4byte
+    id: string # 4byte
+    size: uint32 # 4byte
+    rType: string # 4byte
   FormatChunk* = ref object # 24 byte
-    id*: string # 4byte
-    size*: uint32 # 4byte
-    format*: uint16 # 2byte
-    channels*: uint16 # 2byte
-    sampleRate*: uint32 # 4byte
+    id: string # 4byte
+    size: uint32 # 4byte
+    format: uint16 # 2byte
+    nChannels: uint16 # 2byte
+    sampleRate: uint32 # 4byte
       ## 44.1kHz -> 44100
-    bytePerSec*: uint32 # 4byte
+    bytePerSec: uint32 # 4byte
       ## 16ビットステレオリニアPCM サンプリングレート44100 -> 44100 * 2 * 2
-    blockAlign*: uint16 # 2byte
-    bitsWidth*: uint16 # 2byte
+    blockAlign: uint16 # 2byte
+    bitsWidth: uint16 # 2byte
       ## 16ビットリニアPCM -> 16
       ## MS-ADPCM -> 4
   FormatChunkEx* = ref object
-    formatChunk*: FormatChunk
-    extendedSize*: uint16 # 2byte
-    extended*: seq[byte] # n byte
+    formatChunk: FormatChunk
+    extendedSize: uint16 # 2byte
+    extended: seq[byte] # n byte
   DataChunk* = ref object
-    id*: string ## 4byte 'data'
-    size*: uint32 ## 4byte idとsizeを除くデータサイズ
-    data*: seq[byte] ## n byte
+    id: string ## 4byte 'data'
+    size: uint32 ## 4byte idとsizeを除くデータサイズ
+    data: seq[byte] ## n byte
 
 const
   WAVE_FORMAT_UNKNOWN                  =  [0x00, 0x00]  #  Microsoft
-  WAVE_FORMAT_PCM                      =  [0x01, 0x00]  #  Microsoft
-  WAVE_FORMAT_MS_ADPCM                 =  [0x02, 0x00]  #  Microsoft
+  WAVE_FORMAT_PCM                      =  1'u16  #  Microsoft
+  WAVE_FORMAT_MS_ADPCM                 =  2'u16  #  Microsoft
   WAVE_FORMAT_IEEE_FLOAT               =  [0x03, 0x00]  #  Micrososft
   WAVE_FORMAT_VSELP                    =  [0x04, 0x00]  #  Compaq
   WAVE_FORMAT_IBM_CVSD                 =  [0x05, 0x00]  #  IBM
@@ -145,17 +151,17 @@ const
   WAVE_FORMAT_INTERWAV_VSC112          =  [0x50, 0x71]  #  ?????
   WAVE_FORMAT_EXTENSIBLE               =  [0xFE, 0xFF]  #
 
-proc newRiffHeader*(data: seq[byte]): RiffHeader =
+proc newRiffHeader*(data: openArray[byte]): RiffHeader =
   result = RiffHeader(id: "RIFF", size: data.sizeof.uint32, rType: "WAVE")
 
-proc newFormatChunk*(format, channels: uint16,
-                    sampleRate, bytePerSec: uint32,
-                    blockAlign, bitsWidth: uint16): FormatChunk =
+proc newFormatChunk*(format, nChannels: uint16,
+                     sampleRate, bytePerSec: uint32,
+                     blockAlign, bitsWidth: uint16): FormatChunk =
   result = FormatChunk(
     id: "fmt ",
     size: 16'u32,
     format: format,
-    channels: channels,
+    nChannels: nChannels,
     sampleRate: sampleRate,
     bytePerSec: bytePerSec,
     blockAlign: blockAlign,
@@ -199,7 +205,7 @@ proc parseFormatChunk*(strm: Stream): FormatChunk =
     result.id.add(strm.readChar())
   result.size = strm.readUint32()
   result.format = strm.readUint16()
-  result.channels = strm.readUint16()
+  result.nChannels = strm.readUint16()
   result.sampleRate = strm.readUint32()
   result.bytePerSec = strm.readUint32()
   result.blockAlign = strm.readUint16()
@@ -208,6 +214,75 @@ proc parseFormatChunk*(strm: Stream): FormatChunk =
 proc parseWaveFile*(file: string): Wave =
   var strm = newFileStream(file, fmRead)
   defer: strm.close()
-  result.riffHeader = strm.parseRiffHeader()
-  result.fmtChunk = strm.parseFormatChunk()
-  result.data = strm.parseDataChunk()
+  # result.riffHeader = strm.parseRiffHeader()
+  # result.fmtChunk = strm.parseFormatChunk()
+  # result.data = strm.parseDataChunk()
+
+proc openWaveWriteFile*(fileName: string): WaveWrite =
+  result = WaveWrite()
+  result.riffHeader = newRiffHeader([])
+  result.formatChunk = newFormatChunk(
+    format=WAVE_FORMAT_PCM,
+    nChannels=0'u16,
+    sampleRate=0'u32,
+    bytePerSec=0'u32,
+    blockAlign=0'u16,
+    bitsWidth=8'u16,
+  )
+  result.fileName = fileName
+  result.stream = newStringStream()
+
+proc close*(self: WaveWrite) =
+  var outFile = newFileStream(self.fileName, fmWrite)
+  # RIFF header
+  outFile.write(self.riffHeader.id)
+  outFile.write(self.riffHeader.size)
+  outFile.write(self.riffHeader.rType)
+  # Format chunk
+  outFile.write(self.formatChunk.id)
+  outFile.write(self.formatChunk.size)
+  outFile.write(self.formatChunk.format)
+  outFile.write(self.formatChunk.nChannels)
+  outFile.write(self.formatChunk.sampleRate)
+  outFile.write(self.formatChunk.bytePerSec)
+  outFile.write(self.formatChunk.blockAlign)
+  outFile.write(self.formatChunk.bitsWidth)
+
+  # Data chunk
+  outFile.write("data")
+  outFile.write(self.dataSize)
+
+  self.stream.setPosition(0)
+  const bufSize = 1024
+  var buffer: array[bufSize, byte]
+  while true:
+    let writtenSize = self.stream.readData(addr(buffer), bufSize)
+    if writtenSize == bufSize:
+      outFile.write(buffer)
+    else:
+      for i in 0..<writtenSize:
+        outFile.write(buffer[i])
+    if self.stream.atEnd:
+      break
+
+  outFile.close()
+  self.stream.close()
+
+proc `nChannels=`*(self: var WaveWrite, nChannels: uint16) =
+  self.formatChunk.nChannels = nChannels
+
+proc `sampleRate=`*(self: var WaveWrite, sampleRate: uint16) =
+  self.formatChunk.sampleRate = sampleRate
+
+proc `bytePerSec=`*(self: var WaveWrite, bytePerSec: uint32) =
+  self.formatChunk.bytePerSec = bytePerSec
+
+proc `blockAlign=`*(self: var WaveWrite, blockAlign: uint16) =
+  self.formatChunk.blockAlign = blockAlign
+
+proc writeFrames*(self: WaveWrite, data: openArray[byte]) =
+  self.dataSize += data.len.uint32
+  # Riff header + formatchunk + datachunk
+  self.riffHeader.size = 4'u32 + 24'u32 + 8'u32 + self.dataSize
+  for b in data:
+    self.stream.write(b)
