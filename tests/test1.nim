@@ -86,3 +86,4 @@ suite "usecase":
     wav.writeFrames([0xFF'u8, 0xFF, 0xFF, 0xFF])
     wav.writeFrames([0x00'u8, 0x00, 0x00, 0x00])
     wav.close()
+    check readFile(outDir/"sample1.wav") == readFile(outDir/"usecase1.wav")
