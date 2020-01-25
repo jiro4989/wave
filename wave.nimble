@@ -2,7 +2,7 @@
 
 version       = "0.1.0"
 author        = "jiro4989"
-description   = "A new awesome nimble package"
+description   = "wave is a tiny WAV sound module"
 license       = "MIT"
 srcDir        = "src"
 
