@@ -252,6 +252,19 @@ proc openWaveReadFile*(file: string): WaveRead =
   result.formatChunk = strm.parseFormatChunk()
   # result.data = strm.parseDataChunk()
 
+proc close*(self: WaveRead) = discard
+proc nChannels*(self: WaveRead) = discard
+proc sampleRate*(self: WaveRead) = discard
+proc frameRate*(self: WaveRead) = discard
+proc nFrames*(self: WaveRead) = discard
+proc compType*(self: WaveRead) = discard
+proc compName*(self: WaveRead) = discard
+proc params*(self: WaveRead) = discard
+proc readFrames*(self: WaveRead, n: int) = discard
+proc rewind*(self: WaveRead) = discard
+proc pos*(self: WaveRead) = discard
+proc `pos=`*(self: WaveRead) = discard
+
 proc openWaveWriteFile*(fileName: string): WaveWrite =
   result = WaveWrite()
   result.fileName = fileName
