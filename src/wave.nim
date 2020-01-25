@@ -1,8 +1,11 @@
-## http://www.web-sky.org/program/other/wave.php
-## https://github.com/python/cpython/blob/3.8/Lib/wave.py
-## https://qiita.com/syuhei1008/items/0dd07489f58158fb4f83
-## https://so-zou.jp/software/tech/file/format/wav/#data-chunk
-## https://uppudding.hatenadiary.org/entry/20071223/1198420222
+## See also
+## --------
+##
+## * http://www.web-sky.org/program/other/wave.php
+## * https://github.com/python/cpython/blob/3.8/Lib/wave.py
+## * https://qiita.com/syuhei1008/items/0dd07489f58158fb4f83
+## * https://so-zou.jp/software/tech/file/format/wav/#data-chunk
+## * https://uppudding.hatenadiary.org/entry/20071223/1198420222
 
 import streams
 
@@ -150,10 +153,10 @@ const
   WAVE_FORMAT_INTERWAV_VSC112*          =  0x7150'u16  ## ？？？？？
   WAVE_FORMAT_EXTENSIBLE*               =  0xFFFE'u16  ## ？？？？？
 
-proc newRiffHeader*(data: openArray[byte]): RiffHeader =
+proc newRiffHeader(data: openArray[byte]): RiffHeader =
   result = RiffHeader(id: "RIFF", size: data.sizeof.uint32, typ: "WAVE")
 
-proc newFormatChunk*(format, nChannels: uint16,
+proc newFormatChunk(format, nChannels: uint16,
                      sampleRate, frameRate: uint32,
                      blockAlign, bitsWidth: uint16): FormatChunk =
   result = FormatChunk(
@@ -167,21 +170,21 @@ proc newFormatChunk*(format, nChannels: uint16,
     bitsWidth: bitsWidth,
   )
 
-proc newDataChunk*(): DataChunk =
+proc newDataChunk(): DataChunk =
   result = DataChunk(
     id: "data",
     size: 0'u32,
     data: newStringStream(),
   )
 
-proc parseRiffHeader*(strm: Stream): RiffHeader =
+proc parseRiffHeader(strm: Stream): RiffHeader =
   ## 12 byte
   result = RiffHeader()
   result.id = strm.readStr(4)
   result.size = strm.readUint32()
   result.typ = strm.readStr(4)
 
-proc parseFormatChunk*(strm: Stream): FormatChunk =
+proc parseFormatChunk(strm: Stream): FormatChunk =
   ## 24 byte
   result = FormatChunk()
   result.id = strm.readStr(4)
@@ -266,16 +269,16 @@ proc close*(self: WaveWrite) =
   outFile.close()
   self.dataChunk.data.close()
 
-proc `nChannels=`*(self: var WaveWrite, nChannels: uint16) =
+proc `nChannels=`*(self: WaveWrite, nChannels: uint16) =
   self.formatChunk.nChannels = nChannels
 
-proc `sampleRate=`*(self: var WaveWrite, sampleRate: uint16) =
+proc `sampleRate=`*(self: WaveWrite, sampleRate: uint16) =
   self.formatChunk.sampleRate = sampleRate
 
-proc `frameRate=`*(self: var WaveWrite, frameRate: uint32) =
+proc `frameRate=`*(self: WaveWrite, frameRate: uint32) =
   self.formatChunk.frameRate = frameRate
 
-proc `blockAlign=`*(self: var WaveWrite, blockAlign: uint16) =
+proc `blockAlign=`*(self: WaveWrite, blockAlign: uint16) =
   self.formatChunk.blockAlign = blockAlign
 
 proc writeFrames*(self: WaveWrite, data: openArray[byte]) =
