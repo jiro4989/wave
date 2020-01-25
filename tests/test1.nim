@@ -2,7 +2,10 @@ import unittest
 
 include wave
 
-import streams
+import os, streams
+
+const
+  outDir = "tests"/"testdata"
 
 when false:
   test "write file test":
@@ -52,10 +55,15 @@ test "create wave with byte":
     0x00, 0x00, 0x00, 0x00, # data
   ]
 
-  var strm = newFileStream("tests/out.wav", fmWrite)
+  var strm = newFileStream(outDir/"out.wav", fmWrite)
   for b in data:
     strm.write(b)
   strm.close()
 
 test "parseWaveFile":
-  parseWaveFile("tests/testdata/simple.wav")
+  echo "simple.wav"
+  echo "==========="
+  parseWaveFile(outDir/"simple.wav")
+  echo "out.wav"
+  echo "==========="
+  parseWaveFile(outDir/"out.wav")
