@@ -12,11 +12,10 @@ type
     formatChunk: FormatChunk
     dataChunk: DataChunk
   WaveWrite* = ref object
+    fileName: string
     riffHeader: RiffHeader
     formatChunk: FormatChunk
-    fileName: string
-    stream: StringStream
-    dataSize: uint32
+    dataChunk: DataChunk
   RiffHeader* = ref object # 12 byte
     id: string # 4byte
     size: uint32 # 4byte
@@ -41,7 +40,7 @@ type
   DataChunk* = ref object
     id: string ## 4byte 'data'
     size: uint32 ## 4byte idとsizeを除くデータサイズ
-    data: seq[byte] ## n byte
+    data: StringStream ## n byte
 
 const
   WAVE_FORMAT_UNKNOWN                  =  [0x00, 0x00]  #  Microsoft
@@ -168,11 +167,11 @@ proc newFormatChunk*(format, nChannels: uint16,
     bitsWidth: bitsWidth,
   )
 
-proc newDataChunk*(data: seq[byte]): DataChunk =
+proc newDataChunk*(): DataChunk =
   result = DataChunk(
     id: "data",
-    size: data.len.uint32,
-    data: data,
+    size: 0'u32,
+    data: newStringStream(),
   )
 
 proc openWaveFile*(f: string) =
@@ -220,6 +219,7 @@ proc parseWaveFile*(file: string): Wave =
 
 proc openWaveWriteFile*(fileName: string): WaveWrite =
   result = WaveWrite()
+  result.fileName = fileName
   result.riffHeader = newRiffHeader([])
   result.formatChunk = newFormatChunk(
     format=WAVE_FORMAT_PCM,
@@ -229,8 +229,7 @@ proc openWaveWriteFile*(fileName: string): WaveWrite =
     blockAlign=0'u16,
     bitsWidth=8'u16,
   )
-  result.fileName = fileName
-  result.stream = newStringStream()
+  result.dataChunk = newDataChunk()
 
 proc close*(self: WaveWrite) =
   var outFile = newFileStream(self.fileName, fmWrite)
@@ -238,6 +237,7 @@ proc close*(self: WaveWrite) =
   outFile.write(self.riffHeader.id)
   outFile.write(self.riffHeader.size)
   outFile.write(self.riffHeader.rType)
+
   # Format chunk
   outFile.write(self.formatChunk.id)
   outFile.write(self.formatChunk.size)
@@ -249,24 +249,24 @@ proc close*(self: WaveWrite) =
   outFile.write(self.formatChunk.bitsWidth)
 
   # Data chunk
-  outFile.write("data")
-  outFile.write(self.dataSize)
+  outFile.write(self.dataChunk.id)
+  outFile.write(self.dataChunk.size)
 
-  self.stream.setPosition(0)
+  self.dataChunk.data.setPosition(0)
   const bufSize = 1024
   var buffer: array[bufSize, byte]
   while true:
-    let writtenSize = self.stream.readData(addr(buffer), bufSize)
+    let writtenSize = self.dataChunk.data.readData(addr(buffer), bufSize)
     if writtenSize == bufSize:
       outFile.write(buffer)
     else:
       for i in 0..<writtenSize:
         outFile.write(buffer[i])
-    if self.stream.atEnd:
+    if self.dataChunk.data.atEnd:
       break
 
   outFile.close()
-  self.stream.close()
+  self.dataChunk.data.close()
 
 proc `nChannels=`*(self: var WaveWrite, nChannels: uint16) =
   self.formatChunk.nChannels = nChannels
@@ -281,8 +281,8 @@ proc `blockAlign=`*(self: var WaveWrite, blockAlign: uint16) =
   self.formatChunk.blockAlign = blockAlign
 
 proc writeFrames*(self: WaveWrite, data: openArray[byte]) =
-  self.dataSize += data.len.uint32
+  self.dataChunk.size += data.len.uint32
   # Riff header + formatchunk + datachunk
-  self.riffHeader.size = 4'u32 + 24'u32 + 8'u32 + self.dataSize
+  self.riffHeader.size = 4'u32 + 24'u32 + 8'u32 + self.dataChunk.size
   for b in data:
-    self.stream.write(b)
+    self.dataChunk.data.write(b)
