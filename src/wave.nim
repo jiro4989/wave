@@ -4,7 +4,7 @@
 ## =====
 ##
 ## Reading WAV file example
-## -----------------------
+## ------------------------
 ##
 
 runnableExamples:
@@ -28,7 +28,7 @@ runnableExamples:
 ## .
 ##
 ## Writing WAV file example
-## -----------------------
+## ------------------------
 ##
 ## Square wave
 ## ^^^^^^^^^^^
@@ -58,7 +58,7 @@ runnableExamples:
 ## .
 ##
 ## Sine wave
-## ^^^^^^^^^^^
+## ^^^^^^^^^
 ##
 
 runnableExamples:
@@ -89,6 +89,14 @@ runnableExamples:
 ## .
 ##
 ## See also
+## ========
+##
+## English
+## -------
+##
+## * `WAVE PCM soundfile format <http://soundfile.sapp.org/doc/WaveFormat/>`_
+##
+## Japanese
 ## --------
 ##
 ## * http://www.web-sky.org/program/other/wave.php
@@ -97,7 +105,6 @@ runnableExamples:
 ## * https://so-zou.jp/software/tech/file/format/wav/#data-chunk
 ## * https://uppudding.hatenadiary.org/entry/20071223/1198420222
 ## * https://bb.watch.impress.co.jp/cda/bbword/16386.html
-## * http://soundfile.sapp.org/doc/WaveFormat/
 
 import streams
 
