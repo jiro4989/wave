@@ -25,6 +25,7 @@ runnableExamples:
 
   wav.close()
 
+##
 ## .
 ##
 ## Writing WAV file example
@@ -55,6 +56,7 @@ runnableExamples:
 
   wav.close()
 
+##
 ## .
 ##
 ## Sine wave
@@ -86,6 +88,7 @@ runnableExamples:
 
   wav.close()
 
+##
 ## .
 ##
 ## See also
