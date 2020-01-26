@@ -73,17 +73,13 @@ type
     id: string # 4byte
     size: uint32 # 4byte
     format: uint16 # 2byte
-    numChannels: uint16 # 2byte
-    sampleRate: uint32 # 4byte
-      ## 44.1kHz -> 44100
-    byteRate: uint32 # 4byte
-      ## 16ビットステレオリニアPCM サンプリングレート44100 -> 44100 * 2 * 2
-    blockAlign: uint16 # 2byte
-    bitsPerSample: uint16 # 2byte
-      ## 16ビットリニアPCM -> 16
-      ## MS-ADPCM -> 4
-    extendedSize: uint16 # 2byte
-    extended: seq[byte] # n byte
+    numChannels: uint16 ## 2byte. Mono = 1, Stereo = 2, etc.
+    sampleRate: uint32 ## 4byte. 8000, 44100, etc.
+    byteRate: uint32 ## 4byte. `sampleRate` * `numChannels` * `bitsPerSample` / 8
+    blockAlign: uint16 ## 2byte. `numChannels` * `bitsPerSample` / 8
+    bitsPerSample: uint16 ## 2byte. 8bits = 8, 16bits = 16
+    extendedSize: uint16 ## 2byte
+    extended: seq[byte] ## n byte
   DataSubChunk* = ref object
     id: string ## 4byte 'data'
     size: uint32 ## 4byte idとsizeを除くデータサイズ
@@ -108,6 +104,10 @@ const
   ltxtSubChunkId* = "ltxt"
   smplSubChunkId* = "smpl"
   instSubChunkId* = "inst"
+
+const
+  numChannelsMono* = 1'u16
+  numChannelsStereo* = 2'u16
 
 const
   WAVE_FORMAT_UNKNOWN*                  =  0x0000'u16  ## Microsoft
@@ -314,7 +314,8 @@ proc openWaveReadFile*(file: string): WaveRead =
 proc close*(self: WaveRead) = discard
 proc numChannels*(self: WaveRead): uint16 = self.formatSubChunk.numChannels
 proc sampleRate*(self: WaveRead): uint32 = self.formatSubChunk.sampleRate
-proc byteRate*(self: WaveRead): uint32 = self.formatSubChunk.byteRate
+proc byteRate*(self: WaveRead): uint32 =
+  self.formatSubChunk.byteRate
 proc nFrames*(self: WaveRead) = discard
 # proc compType*(self: WaveRead) = discard
 # proc compName*(self: WaveRead) = discard
@@ -385,17 +386,24 @@ proc close*(self: WaveWrite) =
   outFile.close()
   self.dataSubChunk.data.close()
 
+proc patchByteRate(self: WaveWrite) =
+  let fmt = self.formatSubChunk
+  let byteRate = fmt.sampleRate * fmt.numChannels * fmt.bitsPerSample div fmt.bitsPerSample
+  self.formatSubChunk.byteRate = byteRate
+
+proc patchBlockAlign(self: WaveWrite) =
+  let fmt = self.formatSubChunk
+  let blockAlign = fmt.numChannels * fmt.bitsPerSample div fmt.bitsPerSample
+  self.formatSubChunk.blockAlign = blockAlign
+
 proc `numChannels=`*(self: WaveWrite, numChannels: uint16) =
   self.formatSubChunk.numChannels = numChannels
+  self.patchByteRate()
+  self.patchBlockAlign()
 
 proc `sampleRate=`*(self: WaveWrite, sampleRate: uint16) =
   self.formatSubChunk.sampleRate = sampleRate
-
-proc `byteRate=`*(self: WaveWrite, byteRate: uint32) =
-  self.formatSubChunk.byteRate = byteRate
-
-proc `blockAlign=`*(self: WaveWrite, blockAlign: uint16) =
-  self.formatSubChunk.blockAlign = blockAlign
+  self.patchByteRate()
 
 proc writeFrames*(self: WaveWrite, data: openArray[byte]) =
   self.dataSubChunk.size += data.len.uint32
