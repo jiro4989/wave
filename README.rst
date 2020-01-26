@@ -4,7 +4,7 @@ wave
 
 |nimble-version| |nimble-install| |nimble-docs| |gh-actions|
 
-The wave is a tiny WAV sound module.
+The wave is a tiny `WAV <https://en.wikipedia.org/wiki/WAV>`_ sound module.
 It does not support compression/decompression, but it does support mono/stereo.
 The wave is inspired by `Python wave <https://docs.python.org/3/library/wave.html>`_.
 
