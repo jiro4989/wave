@@ -2,7 +2,7 @@ import unittest
 
 include wave
 
-import os, streams
+import os, streams, math
 
 const
   outDir = "tests"/"testdata"
@@ -49,10 +49,27 @@ test "parseWaveFile":
   echo openWaveReadFile(outDir/"simple.wav")
 
 suite "usecase":
-  test "create basic wav file":
-    var wav = openWaveWriteFile(outDir/"usecase1.wav")
+  test "reading wav file":
+    var wav = openWaveReadFile(outDir/"/sample1.wav")
+    doAssert wav.riffChunkDescriptorSize == 116
+    doAssert wav.numChannels == numChannelsMono
+    doAssert wav.sampleRate == 8000'u32
+    doAssert wav.byteRate == 8000'u32
+    doAssert wav.blockAlign == 1'u16
+    doAssert wav.bitsPerSample == 8'u16
+    doAssert wav.numFrames == 80
+    doAssert wav.dataSubChunkSize == 80'u16
+    ## Output:
+    ## (riffChunkDescriptor: (id: "RIFF", size: 116, format: "WAVE"), formatSubChunk: (id: "fmt ", size: 16, format: 1, numChannels: 1, sampleRate: 8000, byteRate: 8000, blockAlign: 1, bitsPerSample: 8, extendedSize: 0, extended: @[]), dataSubChunk: (id: "data", size: 80, data: ...), audioStartPos: 44)
+
+    wav.close()
+
+  test "writing square wave":
+    var wav = openWaveWriteFile(outDir/"example_square.wav")
+
     wav.numChannels = numChannelsMono
     wav.sampleRate = 8000'u16
+
     wav.writeFrames([0xFF'u8, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00])
     wav.writeFrames([0xFF'u8, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00])
     wav.writeFrames([0xFF'u8, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00])
@@ -63,5 +80,28 @@ suite "usecase":
     wav.writeFrames([0xFF'u8, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00])
     wav.writeFrames([0xFF'u8, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00])
     wav.writeFrames([0xFF'u8, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00])
+
     wav.close()
-    check readFile(outDir/"sample1.wav") == readFile(outDir/"usecase1.wav")
+
+  test "writing sine wave":
+    let
+      width = 127'f
+      sampleRate = 44100'f
+      hz = 440'f
+      seconds = 3
+
+    var wav = openWaveWriteFile(outDir/"example_sine.wav")
+
+    wav.numChannels = numChannelsMono
+    wav.sampleRate = sampleRate.uint16
+
+    for _ in 0 ..< seconds:
+      var buf: seq[byte]
+      for i in 0 ..< sampleRate.int:
+        let f = float(i)
+        let b = byte(width * sin(2*PI*hz*f/sampleRate) + width)
+        buf.add(b)
+      wav.writeFrames(buf)
+
+    wav.close()
+
