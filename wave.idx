@@ -1,5 +1,6 @@
 Usage	wave.html#usage	 Usage	
-Write WAV file example	wave.html#usage-write-wav-file-example	  Write WAV file example	
+Reading WAV file example	wave.html#usage-reading-wav-file-example	  Reading WAV file example	
+Writing WAV file example	wave.html#writing-wav-file-example	 Writing WAV file example	
 See also	wave.html#see-also	 See also	
 WaveRead	wave.html#WaveRead	wave: WaveRead	
 WaveWrite	wave.html#WaveWrite	wave: WaveWrite	
@@ -132,11 +133,13 @@ WAVE_FORMAT_SOUNDSPACE_MUSICOMPRESS	wave.html#WAVE_FORMAT_SOUNDSPACE_MUSICOMPRES
 WAVE_FORMAT_DVM	wave.html#WAVE_FORMAT_DVM	wave: WAVE_FORMAT_DVM	
 WAVE_FORMAT_INTERWAV_VSC112	wave.html#WAVE_FORMAT_INTERWAV_VSC112	wave: WAVE_FORMAT_INTERWAV_VSC112	
 WAVE_FORMAT_EXTENSIBLE	wave.html#WAVE_FORMAT_EXTENSIBLE	wave: WAVE_FORMAT_EXTENSIBLE	
+riffChunkDescriptorSize	wave.html#riffChunkDescriptorSize,WaveRead	wave: riffChunkDescriptorSize(self: WaveRead): uint32	
 numChannels	wave.html#numChannels,WaveRead	wave: numChannels(self: WaveRead): uint16	
 sampleRate	wave.html#sampleRate,WaveRead	wave: sampleRate(self: WaveRead): uint32	
 byteRate	wave.html#byteRate,WaveRead	wave: byteRate(self: WaveRead): uint32	
 blockAlign	wave.html#blockAlign,WaveRead	wave: blockAlign(self: WaveRead): uint16	
 bitsPerSample	wave.html#bitsPerSample,WaveRead	wave: bitsPerSample(self: WaveRead): uint16	
+dataSubChunkSize	wave.html#dataSubChunkSize,WaveRead	wave: dataSubChunkSize(self: WaveRead): uint32	
 numFrames	wave.html#numFrames,WaveRead	wave: numFrames(self: WaveRead): uint32	
 readFrames	wave.html#readFrames,WaveRead,int	wave: readFrames(self: WaveRead; n = 1): seq[byte]	
 pos	wave.html#pos,WaveRead	wave: pos(self: WaveRead): int	
