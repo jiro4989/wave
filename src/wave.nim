@@ -116,11 +116,15 @@ import streams
 
 type
   WaveRead* = ref object
+    ## WaveRead is a Wave object of `fmRead` mode.
+    ## WaveRead doesn't have a writing functions.
     riffChunkDescriptor: RIFFChunkDescriptor
     formatSubChunk: FormatSubChunk
     dataSubChunk: DataSubChunk
     audioStartPos: int
   WaveWrite* = ref object
+    ## WaveWrite is a Wave object of `fmWrite` mode.
+    ## WaveWrite doesn't have a reading functions.
     fileName: string
     riffChunkDescriptor: RIFFChunkDescriptor
     formatSubChunk: FormatSubChunk
@@ -347,25 +351,102 @@ proc skipChunk(strm: Stream) =
   let size = strm.readUint32().int
   discard strm.readStr(size)
 
-proc riffChunkDescriptorSize*(self: WaveRead): uint32 = self.riffChunkDescriptor.size
-proc numChannels*(self: WaveRead): uint16 = self.formatSubChunk.numChannels
-proc sampleRate*(self: WaveRead): uint32 = self.formatSubChunk.sampleRate
-proc byteRate*(self: WaveRead): uint32 = self.formatSubChunk.byteRate
-proc blockAlign*(self: WaveRead): uint16 = self.formatSubChunk.blockAlign
-proc bitsPerSample*(self: WaveRead): uint16 = self.formatSubChunk.bitsPerSample
+proc riffChunkDescriptorSize*(self: WaveRead): uint32 =
+  ## Returns a size of `RiffChunkDescriptor <#RiffChunkDescriptor>`_.
+  ## It equals `WAV filesize - 8 byte`.
+  runnableExamples:
+    ## sample1.wav is 124 byte.
+    var wav = openWaveReadFile("tests/testdata/sample1.wav")
+    doAssert wav.riffChunkDescriptorSize == 116
+    wav.close()
 
-proc dataSubChunkSize*(self: WaveRead): uint32 = self.dataSubChunk.size
-proc numFrames*(self: WaveRead): uint32 = self.dataSubChunk.size div self.blockAlign
+  self.riffChunkDescriptor.size
+
+proc numChannels*(self: WaveRead): uint16 =
+  ## Returns a numChannels of `FormatSubChunk <#FormatSubChunk>`_.
+  ## You can use `Monaural <#numChannelsMono>`_ or `Stereo <#numChannelsStereo>`_.
+  runnableExamples:
+    var wav = openWaveReadFile("tests/testdata/sample1.wav")
+    doAssert wav.numChannels == numChannelsMono
+
+  self.formatSubChunk.numChannels
+
+proc sampleRate*(self: WaveRead): uint32 =
+  ## Returns a sampleRate of `FormatSubChunk <#FormatSubChunk>`_.
+  runnableExamples:
+    var wav = openWaveReadFile("tests/testdata/sample1.wav")
+    doAssert wav.sampleRate == 8000'u32
+    wav.close()
+
+  self.formatSubChunk.sampleRate
+
+proc byteRate*(self: WaveRead): uint32 =
+  ## Returns a byteRate of `FormatSubChunk <#FormatSubChunk>`_.
+  runnableExamples:
+    var wav = openWaveReadFile("tests/testdata/sample1.wav")
+    doAssert wav.byteRate == 8000'u32
+    wav.close()
+
+  self.formatSubChunk.byteRate
+
+proc blockAlign*(self: WaveRead): uint16 =
+  ## Returns a blockAlign of `FormatSubChunk <#FormatSubChunk>`_.
+  runnableExamples:
+    var wav = openWaveReadFile("tests/testdata/sample1.wav")
+    doAssert wav.blockAlign == 1'u16
+    wav.close()
+
+  self.formatSubChunk.blockAlign
+
+proc bitsPerSample*(self: WaveRead): uint16 =
+  ## Returns a bitsPerSample of `FormatSubChunk <#FormatSubChunk>`_.
+  runnableExamples:
+    var wav = openWaveReadFile("tests/testdata/sample1.wav")
+    doAssert wav.bitsPerSample == 8'u16
+    wav.close()
+
+  self.formatSubChunk.bitsPerSample
+
+proc dataSubChunkSize*(self: WaveRead): uint32 =
+  ## Returns a size of `DataSubChunk <#DataSubChunk>`_.
+  runnableExamples:
+    var wav = openWaveReadFile("tests/testdata/sample1.wav")
+    doAssert wav.dataSubChunkSize == 80'u16
+    wav.close()
+
+  self.dataSubChunk.size
+
+proc numFrames*(self: WaveRead): uint32 =
+  ## Returns a count of sound frame.
+  runnableExamples:
+    var wav = openWaveReadFile("tests/testdata/sample1.wav")
+    doAssert wav.numFrames == 80
+    wav.close()
+
+  self.dataSubChunk.size div self.blockAlign
+
 proc readFrames*(self: WaveRead, n = 1): seq[byte] =
+  ## Read sound frames from data of `DataSubChunk <#DataSubChunk>`_.
+  ## A position of data moves when you use this proc.
   if n < 0: return
   for i in 0 ..< n * self.numFrames.int:
     result.add(self.dataSubChunk.data.readUint8)
 
-proc pos*(self: WaveRead): int = self.dataSubChunk.data.getPosition()
-proc `pos=`*(self: WaveRead, n: int) = self.dataSubChunk.data.setPosition(n)
-proc rewind*(self: WaveRead) = self.pos = self.audioStartPos
+proc pos*(self: WaveRead): int =
+  ## Returns a position of data of `DataSubChunk <#DataSubChunk>`_.
+  self.dataSubChunk.data.getPosition()
+
+proc `pos=`*(self: WaveRead, n: int) =
+  ## Set a position to data of `DataSubChunk <#DataSubChunk>`_.
+  self.dataSubChunk.data.setPosition(n)
+
+proc rewind*(self: WaveRead) =
+  ## Set `audioStartPos` to `data.pos` of `DataSubChunk <#DataSubChunk>`_.
+  self.pos = self.audioStartPos
 
 proc openWaveReadFile*(file: string): WaveRead =
+  ## Opens `file` and returns `WaveRead <#WaveRead>`_ object.
+  ## Last, you must `close <#close,WaveRead>`_ `WaveRead <#WaveRead>`_ object.
   var strm = newFileStream(file, fmRead)
   result = WaveRead()
   result.riffChunkDescriptor = strm.parseRIFFChunkDescriptor()
@@ -394,6 +475,8 @@ proc openWaveReadFile*(file: string): WaveRead =
 proc close*(self: WaveRead) = self.dataSubChunk.data.close()
 
 proc openWaveWriteFile*(fileName: string): WaveWrite =
+  ## Opens `file` and returns `WaveWrite <#WaveWrite>`_ object.
+  ## Last, you must `close <#close,WaveWrite>`_ `WaveWrite <#WaveWrite>`_ object.
   result = WaveWrite()
   result.fileName = fileName
   result.riffChunkDescriptor = newRIFFChunkDescriptor([])
