@@ -15,8 +15,6 @@ runnableExamples:
 
   wav.numChannels = 1'u16
   wav.sampleRate = 8000'u16
-  wav.byteRate = 8000'u32
-  wav.blockAlign = 1'u16
 
   wav.writeFrames([0xFF'u8, 0xFF, 0xFF, 0xFF])
   wav.writeFrames([0x00'u8, 0x00, 0x00, 0x00])
