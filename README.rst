@@ -134,7 +134,7 @@ Japanese
 * `WAVE ファイルフォーマット <http://www.web-sky.org/program/other/wave.php>`_
 * `cpython/Lib/wave.py <https://github.com/python/cpython/blob/3.8/Lib/wave.py>`_
 * `WAVEファイル読み・書き込み <https://qiita.com/syuhei1008/items/0dd07489f58158fb4f83>`_
-* `WAV (Waveform Audio File Format <https://so-zou.jp/software/tech/file/format/wav/>)`_
+* `WAV (Waveform Audio File Format) <https://so-zou.jp/software/tech/file/format/wav/>`_
 * `WAVE(WAV)ファイルフォーマット <https://uppudding.hatenadiary.org/entry/20071223/1198420222>`_
 * `その103「WAVの構造と現状」 <https://bb.watch.impress.co.jp/cda/bbword/16386.html>`_
 
