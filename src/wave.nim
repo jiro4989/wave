@@ -86,6 +86,7 @@ type
     id: string ## 4byte 'data'
     size: uint32 ## 4byte idとsizeを除くデータサイズ
     data: Stream ## n byte
+  WaveFormatError* = object of CatchableError
   WaveRiffHeaderError* = object of CatchableError
   WaveFormatChunkError* = object of CatchableError
   WaveDataChunkError* = object of CatchableError
@@ -275,16 +276,38 @@ proc parseFormatChunk(strm: Stream): FormatChunk =
 proc parseDataChunk(strm: Stream): DataChunk =
   result = DataChunk()
   result.id = strm.readStr(4)
-  #validate WaveDataChunkError, "Data chunk", dataChunkId, result.id, "id"
+  validate WaveDataChunkError, "Data chunk", dataChunkId, result.id, "id"
   result.size = strm.readUint32()
   result.data = strm
+
+proc skipChunk(strm: Stream) =
+  discard strm.readStr(4)
+  let size = strm.readUint32().int
+  discard strm.readStr(size)
 
 proc openWaveReadFile*(file: string): WaveRead =
   var strm = newFileStream(file, fmRead)
   result = WaveRead()
   result.riffHeader = strm.parseRiffHeader()
-  result.formatChunk = strm.parseFormatChunk()
-  result.dataChunk = strm.parseDataChunk()
+
+  var
+    formatChunkWasWritten: bool
+    dataChunkWasWritten: bool
+  while not strm.atEnd or (not formatChunkWasWritten and not dataChunkWasWritten):
+    let id = strm.peekStr(4)
+    case id
+    of formatChunkId:
+      result.formatChunk = strm.parseFormatChunk()
+      formatChunkWasWritten = true
+    of dataChunkId:
+      result.dataChunk = strm.parseDataChunk()
+      dataChunkWasWritten = true
+    else:
+      strm.skipChunk()
+  if not formatChunkWasWritten:
+    raise newException(WaveFormatError, "format chunk is empty")
+  if not dataChunkWasWritten:
+    raise newException(WaveFormatError, "data chunk is empty")
 
 proc close*(self: WaveRead) = discard
 proc nChannels*(self: WaveRead): uint16 = self.formatChunk.nChannels
