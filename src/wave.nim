@@ -60,6 +60,7 @@ type
     riffChunkDescriptor: RIFFChunkDescriptor
     formatSubChunk: FormatSubChunk
     dataSubChunk: DataSubChunk
+    audioStartPos: int
   WaveWrite* = ref object
     fileName: string
     riffChunkDescriptor: RIFFChunkDescriptor
@@ -287,6 +288,21 @@ proc skipChunk(strm: Stream) =
   let size = strm.readUint32().int
   discard strm.readStr(size)
 
+proc numChannels*(self: WaveRead): uint16 = self.formatSubChunk.numChannels
+proc sampleRate*(self: WaveRead): uint32 = self.formatSubChunk.sampleRate
+proc byteRate*(self: WaveRead): uint32 = self.formatSubChunk.byteRate
+proc blockAlign*(self: WaveRead): uint16 = self.formatSubChunk.blockAlign
+proc bitsPerSample*(self: WaveRead): uint16 = self.formatSubChunk.bitsPerSample
+proc numFrames*(self: WaveRead): uint32 = self.dataSubChunk.size div self.blockAlign
+proc readFrames*(self: WaveRead, n = 1): seq[byte] =
+  if n < 0: return
+  for i in 0 ..< n * self.numFrames.int:
+    result.add(self.dataSubChunk.data.readUint8)
+
+proc pos*(self: WaveRead): int = self.dataSubChunk.data.getPosition()
+proc `pos=`*(self: WaveRead, n: int) = self.dataSubChunk.data.setPosition(n)
+proc rewind*(self: WaveRead) = self.pos = self.audioStartPos
+
 proc openWaveReadFile*(file: string): WaveRead =
   var strm = newFileStream(file, fmRead)
   result = WaveRead()
@@ -302,6 +318,7 @@ proc openWaveReadFile*(file: string): WaveRead =
       result.formatSubChunk = strm.parseFormatSubChunk()
       formatSubChunkWasWritten = true
     of dataSubChunkId:
+      result.audioStartPos = strm.getPosition() + 8
       result.dataSubChunk = strm.parseDataSubChunk()
       dataSubChunkWasWritten = true
     else:
@@ -310,20 +327,9 @@ proc openWaveReadFile*(file: string): WaveRead =
     raise newException(WaveFormatError, "format chunk is empty")
   if not dataSubChunkWasWritten:
     raise newException(WaveFormatError, "data chunk is empty")
+  result.rewind()
 
-proc close*(self: WaveRead) = discard
-proc numChannels*(self: WaveRead): uint16 = self.formatSubChunk.numChannels
-proc sampleRate*(self: WaveRead): uint32 = self.formatSubChunk.sampleRate
-proc byteRate*(self: WaveRead): uint32 =
-  self.formatSubChunk.byteRate
-proc nFrames*(self: WaveRead) = discard
-# proc compType*(self: WaveRead) = discard
-# proc compName*(self: WaveRead) = discard
-proc params*(self: WaveRead) = discard
-proc readFrames*(self: WaveRead, n: int) = discard
-proc rewind*(self: WaveRead) = discard
-proc pos*(self: WaveRead) = discard
-proc `pos=`*(self: WaveRead) = discard
+proc close*(self: WaveRead) = self.dataSubChunk.data.close()
 
 proc openWaveWriteFile*(fileName: string): WaveWrite =
   result = WaveWrite()
