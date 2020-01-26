@@ -13,7 +13,7 @@ runnableExamples:
 
   var wav = openWaveWriteFile("tests/testdata/usecase1.wav")
 
-  wav.numChannels = 1'u16
+  wav.numChannels = numChannelsMono
   wav.sampleRate = 8000'u16
 
   wav.writeFrames([0xFF'u8, 0xFF, 0xFF, 0xFF])
