@@ -8,7 +8,7 @@ wave
 | It does not support compression/decompression, but it does support mono/stereo.
 | The wave is inspired by `Python wave <https://docs.python.org/3/library/wave.html>`_.
 
-*Note:*
+**Note:**
 
 The wave is not supported some sub-chunks yet.
 I will support sub-chunks (`fact`, `cue`, `plst`, `list`, `labl`, `note`, `ltxt`, `smpl`, `inst`) in the future.
