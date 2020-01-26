@@ -1,11 +1,3 @@
-Usage	wave.html#usage	 Usage	
-Reading WAV file example	wave.html#usage-reading-wav-file-example	  Reading WAV file example	
-Writing WAV file example	wave.html#writing-wav-file-example	 Writing WAV file example	
-Square wave	wave.html#writing-wav-file-example-square-wave	  Square wave	
-Sine wave	wave.html#sine-wave	 Sine wave	
-See also	wave.html#see-also	 See also	
-English	wave.html#see-also-english	  English	
-Japanese	wave.html#see-also-japanese	  Japanese	
 WaveRead	wave.html#WaveRead	wave: WaveRead	
 WaveWrite	wave.html#WaveWrite	wave: WaveWrite	
 RIFFChunkDescriptor	wave.html#RIFFChunkDescriptor	wave: RIFFChunkDescriptor	
