@@ -3,10 +3,32 @@
 ## Usage
 ## =====
 ##
-## Write WAV file example
+## Reading WAV file example
 ## -----------------------
 ##
 
+runnableExamples:
+  import wave
+
+  var wav = openWaveReadFile("tests/testdata/sample1.wav")
+  doAssert wav.riffChunkDescriptorSize == 116
+  doAssert wav.numChannels == numChannelsMono
+  doAssert wav.sampleRate == 8000'u32
+  doAssert wav.byteRate == 8000'u32
+  doAssert wav.blockAlign == 1'u16
+  doAssert wav.bitsPerSample == 8'u16
+  doAssert wav.numFrames == 80
+  doAssert wav.dataSubChunkSize == 80'u16
+  echo wav
+  ## Output:
+  ## (riffChunkDescriptor: (id: "RIFF", size: 116, format: "WAVE"), formatSubChunk: (id: "fmt ", size: 16, format: 1, numChannels: 1, sampleRate: 8000, byteRate: 8000, blockAlign: 1, bitsPerSample: 8, extendedSize: 0, extended: @[]), dataSubChunk: (id: "data", size: 80, data: ...), audioStartPos: 44)
+
+  wav.close()
+
+##
+## Writing WAV file example
+## -----------------------
+##
 
 runnableExamples:
   import wave
@@ -286,11 +308,14 @@ proc skipChunk(strm: Stream) =
   let size = strm.readUint32().int
   discard strm.readStr(size)
 
+proc riffChunkDescriptorSize*(self: WaveRead): uint32 = self.riffChunkDescriptor.size
 proc numChannels*(self: WaveRead): uint16 = self.formatSubChunk.numChannels
 proc sampleRate*(self: WaveRead): uint32 = self.formatSubChunk.sampleRate
 proc byteRate*(self: WaveRead): uint32 = self.formatSubChunk.byteRate
 proc blockAlign*(self: WaveRead): uint16 = self.formatSubChunk.blockAlign
 proc bitsPerSample*(self: WaveRead): uint16 = self.formatSubChunk.bitsPerSample
+
+proc dataSubChunkSize*(self: WaveRead): uint32 = self.dataSubChunk.size
 proc numFrames*(self: WaveRead): uint32 = self.dataSubChunk.size div self.blockAlign
 proc readFrames*(self: WaveRead, n = 1): seq[byte] =
   if n < 0: return
