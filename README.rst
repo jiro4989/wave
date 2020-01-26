@@ -4,13 +4,13 @@ wave
 
 |nimble-version| |nimble-install| |nimble-docs| |gh-actions|
 
-| The wave is a tiny WAV sound module.
-| It does not support compression/decompression, but it does support mono/stereo.
-| The wave is inspired by `Python wave <https://docs.python.org/3/library/wave.html>`_.
+The wave is a tiny WAV sound module.
+It does not support compression/decompression, but it does support mono/stereo.
+The wave is inspired by `Python wave <https://docs.python.org/3/library/wave.html>`_.
 
-| **Note:**
-| The wave is not supported some sub-chunks yet.
-| I will support sub-chunks (`fact`, `cue`, `plst`, `list`, `labl`, `note`, `ltxt`, `smpl`, `inst`) in the future.
+**Note:**
+The wave is not supported some sub-chunks yet.
+I will support sub-chunks (`fact`, `cue`, `plst`, `list`, `labl`, `note`, `ltxt`, `smpl`, `inst`) in the future.
 
 .. contents:: Table of contents
    :depth: 3
