@@ -13,9 +13,9 @@ runnableExamples:
 
   var wav = openWaveWriteFile("tests/testdata/usecase1.wav")
 
-  wav.nChannels = 1'u16
+  wav.numChannels = 1'u16
   wav.sampleRate = 8000'u16
-  wav.frameRate = 8000'u32
+  wav.byteRate = 8000'u32
   wav.blockAlign = 1'u16
 
   wav.writeFrames([0xFF'u8, 0xFF, 0xFF, 0xFF])
@@ -50,62 +50,64 @@ runnableExamples:
 ## * https://qiita.com/syuhei1008/items/0dd07489f58158fb4f83
 ## * https://so-zou.jp/software/tech/file/format/wav/#data-chunk
 ## * https://uppudding.hatenadiary.org/entry/20071223/1198420222
+## * https://bb.watch.impress.co.jp/cda/bbword/16386.html
+## * http://soundfile.sapp.org/doc/WaveFormat/
 
 import streams
 
 type
   WaveRead* = ref object
-    riffHeader: RiffHeader
-    formatChunk: FormatChunk
-    dataChunk: DataChunk
+    riffChunkDescriptor: RIFFChunkDescriptor
+    formatSubChunk: FormatSubChunk
+    dataSubChunk: DataSubChunk
   WaveWrite* = ref object
     fileName: string
-    riffHeader: RiffHeader
-    formatChunk: FormatChunk
-    dataChunk: DataChunk
-  RiffHeader* = ref object # 12 byte
+    riffChunkDescriptor: RIFFChunkDescriptor
+    formatSubChunk: FormatSubChunk
+    dataSubChunk: DataSubChunk
+  RIFFChunkDescriptor* = ref object # 12 byte
     id: string # 4byte
     size: uint32 # 4byte
-    typ: string # 4byte
-  FormatChunk* = ref object # 24 byte
+    format: string # 4byte
+  FormatSubChunk* = ref object # 24 byte
     id: string # 4byte
     size: uint32 # 4byte
     format: uint16 # 2byte
-    nChannels: uint16 # 2byte
+    numChannels: uint16 # 2byte
     sampleRate: uint32 # 4byte
       ## 44.1kHz -> 44100
-    frameRate: uint32 # 4byte
+    byteRate: uint32 # 4byte
       ## 16ビットステレオリニアPCM サンプリングレート44100 -> 44100 * 2 * 2
     blockAlign: uint16 # 2byte
-    bitsWidth: uint16 # 2byte
+    bitsPerSample: uint16 # 2byte
       ## 16ビットリニアPCM -> 16
       ## MS-ADPCM -> 4
     extendedSize: uint16 # 2byte
     extended: seq[byte] # n byte
-  DataChunk* = ref object
+  DataSubChunk* = ref object
     id: string ## 4byte 'data'
     size: uint32 ## 4byte idとsizeを除くデータサイズ
     data: Stream ## n byte
   WaveFormatError* = object of CatchableError
-  WaveRiffHeaderError* = object of CatchableError
-  WaveFormatChunkError* = object of CatchableError
-  WaveDataChunkError* = object of CatchableError
+  WaveRIFFChunkDescriptorError* = object of CatchableError
+  WaveFormatSubChunkError* = object of CatchableError
+  WaveDataSubChunkError* = object of CatchableError
   WaveDataIsEmptyError* = object of CatchableError
 
 const
-  riffHeaderId* = "RIFF"
-  riffHeaderType* = "WAVE"
-  formatChunkId* = "fmt "
-  dataChunkId* = "data"
-  factChunkId* = "fact"
-  cueChunkId* = "cue "
-  plstChunkId* = "plst"
-  listChunkId* = "list"
-  lablChunkId* = "labl"
-  noteChunkId* = "note"
-  ltxtChunkId* = "ltxt"
-  smplChunkId* = "smpl"
-  instChunkId* = "inst"
+  riffChunkDescriptorId* = "RIFF"
+  riffChunkDescriptorType* = "WAVE"
+  formatSubChunkId* = "fmt "
+  dataSubChunkId* = "data"
+  factSubChunkId* = "fact"
+  cueSubChunkId* = "cue "
+  plstSubChunkId* = "plst"
+  listSubChunkId* = "list"
+  lablSubChunkId* = "labl"
+  noteSubChunkId* = "note"
+  ltxtSubChunkId* = "ltxt"
+  smplSubChunkId* = "smpl"
+  instSubChunkId* = "inst"
 
 const
   WAVE_FORMAT_UNKNOWN*                  =  0x0000'u16  ## Microsoft
@@ -215,26 +217,26 @@ const
   WAVE_FORMAT_INTERWAV_VSC112*          =  0x7150'u16  ## ？？？？？
   WAVE_FORMAT_EXTENSIBLE*               =  0xFFFE'u16  ## ？？？？？
 
-proc newRiffHeader(data: openArray[byte]): RiffHeader =
-  result = RiffHeader(id: riffHeaderId, size: data.sizeof.uint32, typ: riffHeaderType)
+proc newRIFFChunkDescriptor(data: openArray[byte]): RIFFChunkDescriptor =
+  result = RIFFChunkDescriptor(id: riffChunkDescriptorId, size: data.sizeof.uint32, format: riffChunkDescriptorType)
 
-proc newFormatChunk(format, nChannels: uint16,
-                     sampleRate, frameRate: uint32,
-                     blockAlign, bitsWidth: uint16): FormatChunk =
-  result = FormatChunk(
-    id: formatChunkId,
+proc newFormatSubChunk(format, numChannels: uint16,
+                     sampleRate, byteRate: uint32,
+                     blockAlign, bitsPerSample: uint16): FormatSubChunk =
+  result = FormatSubChunk(
+    id: formatSubChunkId,
     size: 16'u32,
     format: format,
-    nChannels: nChannels,
+    numChannels: numChannels,
     sampleRate: sampleRate,
-    frameRate: frameRate,
+    byteRate: byteRate,
     blockAlign: blockAlign,
-    bitsWidth: bitsWidth,
+    bitsPerSample: bitsPerSample,
   )
 
-proc newDataChunk(): DataChunk =
-  result = DataChunk(
-    id: dataChunkId,
+proc newDataSubChunk(): DataSubChunk =
+  result = DataSubChunk(
+    id: dataSubChunkId,
     size: 0'u32,
     data: newStringStream(),
   )
@@ -244,39 +246,39 @@ template validate(T: typedesc, prefix, want, got, key: string) =
     let msg = "illegal " & prefix & " " & key & ". (" & key & " = '" & got & "')"
     raise newException(T, msg)
 
-proc parseRiffHeader(strm: Stream): RiffHeader =
+proc parseRIFFChunkDescriptor(strm: Stream): RIFFChunkDescriptor =
   ## 12 byte
-  result = RiffHeader()
+  result = RIFFChunkDescriptor()
 
   result.id = strm.readStr(4)
-  validate WaveRiffHeaderError, "RIFF Header", riffHeaderId, result.id, "id"
+  validate WaveRIFFChunkDescriptorError, "RIFF Header", riffChunkDescriptorId, result.id, "id"
   result.size = strm.readUint32()
-  result.typ = strm.readStr(4)
-  validate WaveRiffHeaderError, "RIFF Header", riffHeaderType, result.typ, "typ"
+  result.format = strm.readStr(4)
+  validate WaveRIFFChunkDescriptorError, "RIFF Header", riffChunkDescriptorType, result.format, "format"
 
-proc parseFormatChunk(strm: Stream): FormatChunk =
+proc parseFormatSubChunk(strm: Stream): FormatSubChunk =
   ## 24 byte
-  result = FormatChunk()
+  result = FormatSubChunk()
   result.id = strm.readStr(4)
-  validate WaveFormatChunkError, "Format chunk", formatChunkId, result.id, "id"
+  validate WaveFormatSubChunkError, "Format chunk", formatSubChunkId, result.id, "id"
   result.size = strm.readUint32()
   result.format = strm.readUint16()
   if result.format != WAVE_FORMAT_PCM:
-    raise newException(WaveFormatChunkError, "unknown format: " & $result.format)
-  result.nChannels = strm.readUint16()
+    raise newException(WaveFormatSubChunkError, "unknown format: " & $result.format)
+  result.numChannels = strm.readUint16()
   result.sampleRate = strm.readUint32()
-  result.frameRate = strm.readUint32()
+  result.byteRate = strm.readUint32()
   result.blockAlign = strm.readUint16()
-  result.bitsWidth = strm.readUint16()
+  result.bitsPerSample = strm.readUint16()
   if 16'u32 < result.size:
     result.extendedSize = strm.readUint16()
     for i in 0'u16 ..< result.extendedSize:
       result.extended.add(strm.readUint8())
 
-proc parseDataChunk(strm: Stream): DataChunk =
-  result = DataChunk()
+proc parseDataSubChunk(strm: Stream): DataSubChunk =
+  result = DataSubChunk()
   result.id = strm.readStr(4)
-  validate WaveDataChunkError, "Data chunk", dataChunkId, result.id, "id"
+  validate WaveDataSubChunkError, "Data chunk", dataSubChunkId, result.id, "id"
   result.size = strm.readUint32()
   result.data = strm
 
@@ -288,31 +290,31 @@ proc skipChunk(strm: Stream) =
 proc openWaveReadFile*(file: string): WaveRead =
   var strm = newFileStream(file, fmRead)
   result = WaveRead()
-  result.riffHeader = strm.parseRiffHeader()
+  result.riffChunkDescriptor = strm.parseRIFFChunkDescriptor()
 
   var
-    formatChunkWasWritten: bool
-    dataChunkWasWritten: bool
-  while not strm.atEnd or (not formatChunkWasWritten and not dataChunkWasWritten):
+    formatSubChunkWasWritten: bool
+    dataSubChunkWasWritten: bool
+  while not strm.atEnd or (not formatSubChunkWasWritten and not dataSubChunkWasWritten):
     let id = strm.peekStr(4)
     case id
-    of formatChunkId:
-      result.formatChunk = strm.parseFormatChunk()
-      formatChunkWasWritten = true
-    of dataChunkId:
-      result.dataChunk = strm.parseDataChunk()
-      dataChunkWasWritten = true
+    of formatSubChunkId:
+      result.formatSubChunk = strm.parseFormatSubChunk()
+      formatSubChunkWasWritten = true
+    of dataSubChunkId:
+      result.dataSubChunk = strm.parseDataSubChunk()
+      dataSubChunkWasWritten = true
     else:
       strm.skipChunk()
-  if not formatChunkWasWritten:
+  if not formatSubChunkWasWritten:
     raise newException(WaveFormatError, "format chunk is empty")
-  if not dataChunkWasWritten:
+  if not dataSubChunkWasWritten:
     raise newException(WaveFormatError, "data chunk is empty")
 
 proc close*(self: WaveRead) = discard
-proc nChannels*(self: WaveRead): uint16 = self.formatChunk.nChannels
-proc sampleRate*(self: WaveRead): uint32 = self.formatChunk.sampleRate
-proc frameRate*(self: WaveRead): uint32 = self.formatChunk.frameRate
+proc numChannels*(self: WaveRead): uint16 = self.formatSubChunk.numChannels
+proc sampleRate*(self: WaveRead): uint32 = self.formatSubChunk.sampleRate
+proc byteRate*(self: WaveRead): uint32 = self.formatSubChunk.byteRate
 proc nFrames*(self: WaveRead) = discard
 # proc compType*(self: WaveRead) = discard
 # proc compName*(self: WaveRead) = discard
@@ -325,85 +327,85 @@ proc `pos=`*(self: WaveRead) = discard
 proc openWaveWriteFile*(fileName: string): WaveWrite =
   result = WaveWrite()
   result.fileName = fileName
-  result.riffHeader = newRiffHeader([])
-  result.formatChunk = newFormatChunk(
+  result.riffChunkDescriptor = newRIFFChunkDescriptor([])
+  result.formatSubChunk = newFormatSubChunk(
     format=WAVE_FORMAT_PCM,
-    nChannels=0'u16,
+    numChannels=0'u16,
     sampleRate=0'u32,
-    frameRate=0'u32,
+    byteRate=0'u32,
     blockAlign=0'u16,
-    bitsWidth=8'u16,
+    bitsPerSample=8'u16,
   )
-  result.dataChunk = newDataChunk()
+  result.dataSubChunk = newDataSubChunk()
 
 proc close*(self: WaveWrite) =
-  let head = self.riffHeader
-  let fmt = self.formatChunk
+  let head = self.riffChunkDescriptor
+  let fmt = self.formatSubChunk
 
-  if fmt.nChannels == 0: raise newException(WaveFormatChunkError, "'nChannels' is not set")
-  if fmt.sampleRate == 0: raise newException(WaveFormatChunkError, "'sampleRate' is not set")
-  if fmt.frameRate == 0: raise newException(WaveFormatChunkError, "'frameRate' is not set")
-  if fmt.blockAlign == 0: raise newException(WaveFormatChunkError, "'blockAlign' is not set")
-  if self.dataChunk.size == 0: raise newException(WaveDataIsEmptyError, "frames are not set")
+  if fmt.numChannels == 0: raise newException(WaveFormatSubChunkError, "'numChannels' is not set")
+  if fmt.sampleRate == 0: raise newException(WaveFormatSubChunkError, "'sampleRate' is not set")
+  if fmt.byteRate == 0: raise newException(WaveFormatSubChunkError, "'byteRate' is not set")
+  if fmt.blockAlign == 0: raise newException(WaveFormatSubChunkError, "'blockAlign' is not set")
+  if self.dataSubChunk.size == 0: raise newException(WaveDataIsEmptyError, "frames are not set")
 
   var outFile = newFileStream(self.fileName, fmWrite)
   # RIFF header
   outFile.write(head.id)
   outFile.write(head.size)
-  outFile.write(head.typ)
+  outFile.write(head.format)
 
   # Format chunk
   outFile.write(fmt.id)
   outFile.write(fmt.size)
   outFile.write(fmt.format)
-  outFile.write(fmt.nChannels)
+  outFile.write(fmt.numChannels)
   outFile.write(fmt.sampleRate)
-  outFile.write(fmt.frameRate)
+  outFile.write(fmt.byteRate)
   outFile.write(fmt.blockAlign)
-  outFile.write(fmt.bitsWidth)
+  outFile.write(fmt.bitsPerSample)
 
   # Data chunk
-  outFile.write(self.dataChunk.id)
-  outFile.write(self.dataChunk.size)
+  outFile.write(self.dataSubChunk.id)
+  outFile.write(self.dataSubChunk.size)
 
-  self.dataChunk.data.setPosition(0)
+  self.dataSubChunk.data.setPosition(0)
   const bufSize = 1024
   var buffer: array[bufSize, byte]
   while true:
-    let writtenSize = self.dataChunk.data.readData(addr(buffer), bufSize)
+    let writtenSize = self.dataSubChunk.data.readData(addr(buffer), bufSize)
     if writtenSize == bufSize:
       outFile.write(buffer)
     elif 0 < writtenSize:
       for i in 0..<writtenSize:
         outFile.write(buffer[i])
     else:
-      if self.dataChunk.data.atEnd:
+      if self.dataSubChunk.data.atEnd:
         break
 
   outFile.close()
-  self.dataChunk.data.close()
+  self.dataSubChunk.data.close()
 
-proc `nChannels=`*(self: WaveWrite, nChannels: uint16) =
-  self.formatChunk.nChannels = nChannels
+proc `numChannels=`*(self: WaveWrite, numChannels: uint16) =
+  self.formatSubChunk.numChannels = numChannels
 
 proc `sampleRate=`*(self: WaveWrite, sampleRate: uint16) =
-  self.formatChunk.sampleRate = sampleRate
+  self.formatSubChunk.sampleRate = sampleRate
 
-proc `frameRate=`*(self: WaveWrite, frameRate: uint32) =
-  self.formatChunk.frameRate = frameRate
+proc `byteRate=`*(self: WaveWrite, byteRate: uint32) =
+  self.formatSubChunk.byteRate = byteRate
 
 proc `blockAlign=`*(self: WaveWrite, blockAlign: uint16) =
-  self.formatChunk.blockAlign = blockAlign
+  self.formatSubChunk.blockAlign = blockAlign
 
 proc writeFrames*(self: WaveWrite, data: openArray[byte]) =
-  self.dataChunk.size += data.len.uint32
+  self.dataSubChunk.size += data.len.uint32
   # Riff header + formatchunk + datachunk
-  self.riffHeader.size = 4'u32 + 24'u32 + 8'u32 + self.dataChunk.size
+  self.riffChunkDescriptor.size = 4'u32 + 24'u32 + 8'u32 + self.dataSubChunk.size
   for b in data:
-    self.dataChunk.data.write(b)
+    self.dataSubChunk.data.write(b)
 
-proc `$`*(self: RiffHeader): string = $self[]
-proc `$`*(self: FormatChunk): string = $self[]
-proc `$`*(self: DataChunk): string = $self[]
+proc `$`*(self: RIFFChunkDescriptor): string = $self[]
+proc `$`*(self: FormatSubChunk): string = $self[]
+proc `$`*(self: DataSubChunk): string = $self[]
 proc `$`*(self: WaveRead): string = $self[]
 proc `$`*(self: WaveWrite): string = $self[]
