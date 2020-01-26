@@ -37,7 +37,7 @@ runnableExamples:
 runnableExamples:
   import wave
 
-  var wav = openWaveWriteFile("tests/testdata/usecase1.wav")
+  var wav = openWaveWriteFile("tests/testdata/example_square.wav")
 
   wav.numChannels = numChannelsMono
   wav.sampleRate = 8000'u16
@@ -52,6 +52,37 @@ runnableExamples:
   wav.writeFrames([0xFF'u8, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00])
   wav.writeFrames([0xFF'u8, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00])
   wav.writeFrames([0xFF'u8, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00])
+
+  wav.close()
+
+## .
+##
+## Sine wave
+## ^^^^^^^^^^^
+##
+
+runnableExamples:
+  import wave
+  import math
+
+  let
+    width = 127'f
+    sampleRate = 44100'f
+    hz = 440'f
+    seconds = 3
+
+  var wav = openWaveWriteFile("tests/testdata/example_sine.wav")
+
+  wav.numChannels = numChannelsMono
+  wav.sampleRate = sampleRate.uint16
+
+  for _ in 0 ..< seconds:
+    var buf: seq[byte]
+    for i in 0 ..< sampleRate.int:
+      let f = float(i)
+      let b = byte(width * sin(2*PI*hz*f/sampleRate) + width)
+      buf.add(b)
+    wav.writeFrames(buf)
 
   wav.close()
 
