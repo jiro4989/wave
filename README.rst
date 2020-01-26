@@ -47,6 +47,9 @@ See also
 
 * `WAVE PCM soundfile format <http://soundfile.sapp.org/doc/WaveFormat/>`_
 
+.. include:: wave.nimble
+   :literal:
+
 .. |gh-actions| image:: https://github.com/jiro4989/wave/workflows/build/badge.svg
    :target: https://github.com/jiro4989/wave/actions
 .. |nimble-version| image:: https://nimble.directory/ci/badges/wave/version.svg
