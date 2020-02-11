@@ -12,6 +12,7 @@ type
     riffChunkDescriptor: RIFFChunkDescriptor
     formatSubChunk: FormatSubChunk
     dataSubChunk: DataSubChunk
+    factSubChunk: FactSubChunk
     audioStartPos: int
   WaveWrite* = ref object
     ## WaveWrite is a Wave object of `fmWrite` mode.
@@ -39,10 +40,16 @@ type
     id: string ## 4byte 'data'
     size: uint32 ## 4byte idとsizeを除くデータサイズ
     data: Stream ## n byte
+  FactSubChunk* = ref object
+    id: string ## 4byte 'fact'
+    size: uint32 ## 4byte depends on format
+    data: seq[byte] ## n byte
+
   WaveFormatError* = object of CatchableError
   WaveRIFFChunkDescriptorError* = object of CatchableError
   WaveFormatSubChunkError* = object of CatchableError
   WaveDataSubChunkError* = object of CatchableError
+  WaveFactSubChunkError* = object of CatchableError
   WaveDataIsEmptyError* = object of CatchableError
 
 const
@@ -237,6 +244,14 @@ proc parseDataSubChunk(strm: Stream): DataSubChunk =
   result.size = strm.readUint32()
   result.data = strm
 
+proc parseFactSubChunk(strm: Stream): FactSubChunk =
+  result = FactSubChunk()
+  result.id = strm.readStr(4)
+  validate WaveFactSubChunkError, "Fact chunk", factSubChunkId, result.id, "id"
+  result.size = strm.readUint32()
+  for _ in 0..<result.size:
+    result.data.add(strm.readUint8())
+
 proc skipChunk(strm: Stream) =
   discard strm.readStr(4)
   let size = strm.readUint32().int
@@ -345,6 +360,8 @@ proc openWaveReadFile*(file: string): WaveRead =
   var
     formatSubChunkWasWritten: bool
     dataSubChunkWasWritten: bool
+  # Note: dataサブチャンクより後にオプションのサブチャンクが配置されることはある
+  # のか？
   while not strm.atEnd or (not formatSubChunkWasWritten and not dataSubChunkWasWritten):
     let id = strm.peekStr(4)
     case id
@@ -355,6 +372,8 @@ proc openWaveReadFile*(file: string): WaveRead =
       result.audioStartPos = strm.getPosition() + 8
       result.dataSubChunk = strm.parseDataSubChunk()
       dataSubChunkWasWritten = true
+    of factSubChunkId:
+      result.factSubChunk = strm.parseFactSubChunk()
     else:
       strm.skipChunk()
   if not formatSubChunkWasWritten:
@@ -457,5 +476,6 @@ proc writeFrames*(self: WaveWrite, data: openArray[byte]) =
 proc `$`*(self: RIFFChunkDescriptor): string = $self[]
 proc `$`*(self: FormatSubChunk): string = $self[]
 proc `$`*(self: DataSubChunk): string = $self[]
+proc `$`*(self: FactSubChunk): string = $self[]
 proc `$`*(self: WaveRead): string = $self[]
 proc `$`*(self: WaveWrite): string = $self[]
