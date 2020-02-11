@@ -1,0 +1,16 @@
+WaveRead	wave/waveread.html#WaveRead	waveread: WaveRead	
+riffChunkDescriptorSize	wave/waveread.html#riffChunkDescriptorSize,WaveRead	waveread: riffChunkDescriptorSize(self: WaveRead): uint32	
+numChannels	wave/waveread.html#numChannels,WaveRead	waveread: numChannels(self: WaveRead): uint16	
+sampleRate	wave/waveread.html#sampleRate,WaveRead	waveread: sampleRate(self: WaveRead): uint32	
+byteRate	wave/waveread.html#byteRate,WaveRead	waveread: byteRate(self: WaveRead): uint32	
+blockAlign	wave/waveread.html#blockAlign,WaveRead	waveread: blockAlign(self: WaveRead): uint16	
+bitsPerSample	wave/waveread.html#bitsPerSample,WaveRead	waveread: bitsPerSample(self: WaveRead): uint16	
+dataSubChunkSize	wave/waveread.html#dataSubChunkSize,WaveRead	waveread: dataSubChunkSize(self: WaveRead): uint32	
+numFrames	wave/waveread.html#numFrames,WaveRead	waveread: numFrames(self: WaveRead): uint32	
+readFrames	wave/waveread.html#readFrames,WaveRead,int	waveread: readFrames(self: WaveRead; n = 1): seq[byte]	
+pos	wave/waveread.html#pos,WaveRead	waveread: pos(self: WaveRead): int	
+pos=	wave/waveread.html#pos=,WaveRead,int	waveread: pos=(self: WaveRead; n: int)	
+rewind	wave/waveread.html#rewind,WaveRead	waveread: rewind(self: WaveRead)	
+openWaveReadFile	wave/waveread.html#openWaveReadFile,string	waveread: openWaveReadFile(file: string): WaveRead	
+close	wave/waveread.html#close,WaveRead	waveread: close(self: WaveRead)	
+`$`	wave/waveread.html#$,WaveRead	waveread: `$`(self: WaveRead): string	
