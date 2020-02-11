@@ -127,6 +127,7 @@ English
 -------
 
 * `WAVE PCM soundfile format <http://soundfile.sapp.org/doc/WaveFormat/>`_
+* `Wav file format -musicg-api <https://sites.google.com/site/musicgapi/technical-documents/wav-file-format#fact>`_
 
 Japanese
 --------
