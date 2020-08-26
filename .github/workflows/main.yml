@@ -17,9 +17,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     needs: before
-    env:
-      NIM_VERSION: 1.0.4
+    strategy:
+      matrix:
+        nim-version:
+          - '1.0.4'
+          - '1.2.0'
+          - '1.2.6'
     steps:
       - uses: actions/checkout@v1
-      - uses: jiro4989/setup-nim-action@v1.0.1
+      - uses: jiro4989/setup-nim-action@v1
+        with:
+          nim-version: ${{ matrix.nim-version }}
       - run: nimble test -Y
