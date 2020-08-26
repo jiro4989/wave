@@ -5,6 +5,9 @@ on:
     branches:
       - master
 
+env:
+  deploy-dir: ./docs
+
 jobs:
   build-docs-deploy:
     env:
@@ -20,10 +23,10 @@ jobs:
           key: ${{ runner.os }}-choosenim-${{ env.NIM_VERSION }}
       - uses: jiro4989/setup-nim-action@v1.0.1
       - name: Generate documents
-        run: nimble doc --index:on --project --out:docs --hints:off src/wave.nim
+        run: nimble doc --index:on --project --out:${{ env.deploy-dir }} --hints:off src/wave.nim
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v2.4.0
         env:
           ACTIONS_DEPLOY_KEY: ${{ secrets.ACTIONS_DEPLOY_KEY }}
           PUBLISH_BRANCH: gh-pages
-          PUBLISH_DIR: ./docs
+          PUBLISH_DIR: ${{ env.deploy-dir }}
