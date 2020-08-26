@@ -11,8 +11,6 @@ env:
 
 jobs:
   build-docs-deploy:
-    env:
-      NIM_VERSION: 1.0.4
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
