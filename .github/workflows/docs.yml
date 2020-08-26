@@ -7,6 +7,7 @@ on:
 
 env:
   deploy-dir: ./docs
+  nim-version: 'stable'
 
 jobs:
   build-docs-deploy:
@@ -15,7 +16,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - uses: jiro4989/setup-nim-action@v1.0.1
+      - uses: jiro4989/setup-nim-action@v1
+        with:
+          nim-version: ${{ env.nim-version }}
       - name: Generate documents
         run: nimble doc --index:on --project --out:${{ env.deploy-dir }} --hints:off src/wave.nim
       - name: Deploy
