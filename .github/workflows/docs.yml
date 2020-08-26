@@ -20,7 +20,7 @@ jobs:
           key: ${{ runner.os }}-choosenim-${{ env.NIM_VERSION }}
       - uses: jiro4989/setup-nim-action@v1.0.1
       - name: Generate documents
-        run: nimble docs
+        run: nimble doc --index:on --project --out:docs --hints:off src/wave.nim
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v2.4.0
         env:
