@@ -2,7 +2,15 @@
 
 name: build
 
-"on": [push, pull_request]
+"on":
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - 'README**'
+  pull_request:
+    paths-ignore:
+      - 'README**'
 
 jobs:
   skip:
