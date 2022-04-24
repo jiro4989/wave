@@ -17,10 +17,10 @@
 <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro:400,500,600' rel='stylesheet' type='text/css'/>
 
 <!-- CSS -->
-<title>wave/wavewrite</title>
+<title>src/wave/wavewrite</title>
 <link rel="stylesheet" type="text/css" href="../nimdoc.out.css">
 
-<script type="text/javascript" src="dochack.js"></script>
+<script type="text/javascript" src="../dochack.js"></script>
 
 <script type="text/javascript">
 function main() {
@@ -34,7 +34,6 @@ function main() {
     }
   }
 
-  const toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
   function switchTheme(e) {
       if (e.target.checked) {
           document.documentElement.setAttribute('data-theme', 'dark');
@@ -45,33 +44,32 @@ function main() {
       }
   }
 
-  toggleSwitch.addEventListener('change', switchTheme, false);
+  const toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
+  if (toggleSwitch !== null) {
+    toggleSwitch.addEventListener('change', switchTheme, false);
+  }
 
+  var currentTheme = localStorage.getItem('theme');
+  if (!currentTheme && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    currentTheme = 'dark';
+  }
+  if (currentTheme) {
+    document.documentElement.setAttribute('data-theme', currentTheme);
 
-  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    document.documentElement.setAttribute('data-theme', "dark");
-    toggleSwitch.checked = true;
-  } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
-    document.documentElement.setAttribute('data-theme', "light");
-    toggleSwitch.checked = false;
-  } else {
-    const currentTheme = localStorage.getItem('theme') ? localStorage.getItem('theme') : null;
-    if (currentTheme) {
-      document.documentElement.setAttribute('data-theme', currentTheme);
-
-      if (currentTheme === 'dark') {
-        toggleSwitch.checked = true;
-      }
+    if (currentTheme === 'dark' && toggleSwitch !== null) {
+      toggleSwitch.checked = true;
     }
   }
 }
+
+window.addEventListener('DOMContentLoaded', main);
 </script>
 
 </head>
-<body onload="main()">
+<body>
 <div class="document" id="documentId">
   <div class="container">
-    <h1 class="title">wave/wavewrite</h1>
+    <h1 class="title">src/wave/wavewrite</h1>
     <div class="row">
   <div class="three columns">
   <div class="theme-switch-wrapper">
@@ -83,6 +81,9 @@ function main() {
   </div>
   <div id="global-links">
     <ul class="simple">
+    <li>
+      <a href="../theindex.html">Index</a>
+    </li>
     </ul>
   </div>
   <div id="searchInputDiv">
@@ -111,25 +112,43 @@ function main() {
   fileName: string
   riffChunkDescriptor: RIFFChunkDescriptor
   formatSubChunk: FormatSubChunk
-  dataSubChunk: DataSubChunk"><wbr />Wave<wbr />Write<span class="attachedType"></span></a></li>
+  dataSubChunk: DataSubChunk">WaveWrite</a></li>
 
   </ul>
 </li>
 <li>
   <a class="reference reference-toplevel" href="#12" id="62">Procs</a>
   <ul class="simple simple-toc-section">
+      <ul class="simple nested-toc-section">$
+      <li><a class="reference" href="#%24%2CWaveWrite"
+    title="`$`(self: WaveWrite): string">`$`(self: WaveWrite): string</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">close
+      <li><a class="reference" href="#close%2CWaveWrite"
+    title="close(self: WaveWrite)">close(self: WaveWrite)</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">numChannels=
       <li><a class="reference" href="#numChannels%3D%2CWaveWrite%2Cuint16"
-    title="numChannels=(self: WaveWrite; numChannels: uint16)"><wbr />num<wbr />Channels=<span class="attachedType">WaveWrite</span></a></li>
-  <li><a class="reference" href="#sampleRate%3D%2CWaveWrite%2Cuint16"
-    title="sampleRate=(self: WaveWrite; sampleRate: uint16)"><wbr />sample<wbr />Rate=<span class="attachedType">WaveWrite</span></a></li>
-  <li><a class="reference" href="#writeFrames%2CWaveWrite%2CopenArray%5Bbyte%5D"
-    title="writeFrames(self: WaveWrite; data: openArray[byte])"><wbr />write<wbr />Frames<span class="attachedType">WaveWrite</span></a></li>
-  <li><a class="reference" href="#openWaveWriteFile%2Cstring"
-    title="openWaveWriteFile(fileName: string): WaveWrite"><wbr />open<wbr />Wave<wbr />Write<wbr />File<span class="attachedType">WaveWrite</span></a></li>
-  <li><a class="reference" href="#close%2CWaveWrite"
-    title="close(self: WaveWrite)"><wbr />close<span class="attachedType">WaveWrite</span></a></li>
-  <li><a class="reference" href="#%24%2CWaveWrite"
-    title="`$`(self: WaveWrite): string"><wbr />`$`<span class="attachedType">WaveWrite</span></a></li>
+    title="numChannels=(self: WaveWrite; numChannels: uint16)">numChannels=(self: WaveWrite; numChannels: uint16)</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">openWaveWriteFile
+      <li><a class="reference" href="#openWaveWriteFile%2Cstring"
+    title="openWaveWriteFile(fileName: string): WaveWrite">openWaveWriteFile(fileName: string): WaveWrite</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">sampleRate=
+      <li><a class="reference" href="#sampleRate%3D%2CWaveWrite%2Cuint16"
+    title="sampleRate=(self: WaveWrite; sampleRate: uint16)">sampleRate=(self: WaveWrite; sampleRate: uint16)</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">writeFrames
+      <li><a class="reference" href="#writeFrames%2CWaveWrite%2CopenArray%5Bbyte%5D"
+    title="writeFrames(self: WaveWrite; data: openArray[byte])">writeFrames(self: WaveWrite; data: openArray[byte])</a></li>
+
+  </ul>
 
   </ul>
 </li>
@@ -143,6 +162,7 @@ function main() {
 </ul>
 
   </div>
+  
   <div class="nine columns" id="content">
   <div id="tocRoot"></div>
   
@@ -155,7 +175,7 @@ function main() {
 <div class="section" id="7">
 <h1><a class="toc-backref" href="#7">Types</a></h1>
 <dl class="item">
-<a id="WaveWrite"></a>
+<div id="WaveWrite">
 <dt><pre><a href="wavewrite.html#WaveWrite"><span class="Identifier">WaveWrite</span></a> <span class="Other">=</span> <span class="Keyword">ref</span> <span class="Keyword">object</span>
   <span class="Identifier">fileName</span><span class="Other">:</span> <span class="Identifier">string</span>
   <span class="Identifier">riffChunkDescriptor</span><span class="Other">:</span> <a href="wavetypes.html#RIFFChunkDescriptor"><span class="Identifier">RIFFChunkDescriptor</span></a>
@@ -164,65 +184,73 @@ function main() {
 </pre></dt>
 <dd>
 
-WaveWrite is a Wave object of <tt class="docutils literal"><span class="pre">fmWrite</span></tt> mode. WaveWrite doesn't have a reading functions.
+WaveWrite is a Wave object of <tt class="docutils literal"><span class="pre"><span class="Identifier">fmWrite</span></span></tt> mode. WaveWrite doesn't have a reading functions.
 
 </dd>
+</div>
 
 </dl></div>
 <div class="section" id="12">
 <h1><a class="toc-backref" href="#12">Procs</a></h1>
 <dl class="item">
-<a id="numChannels=,WaveWrite,uint16"></a>
-<dt><pre><span class="Keyword">proc</span> <a href="#numChannels%3D%2CWaveWrite%2Cuint16"><span class="Identifier">numChannels=</span></a><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="wavewrite.html#WaveWrite"><span class="Identifier">WaveWrite</span></a><span class="Other">;</span> <span class="Identifier">numChannels</span><span class="Other">:</span> <span class="Identifier">uint16</span><span class="Other">)</span> <span><span class="Other">{</span><span class="Other pragmadots">...</span><span class="Other">}</span></span><span class="pragmawrap"><span class="Other">{.</span><span class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span><span class="Other">.}</span></span></pre></dt>
+<div id="$,WaveWrite">
+<dt><pre><span class="Keyword">proc</span> <a href="#%24%2CWaveWrite"><span class="Identifier">`$`</span></a><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="wavewrite.html#WaveWrite"><span class="Identifier">WaveWrite</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 
 
 </dd>
-<a id="sampleRate=,WaveWrite,uint16"></a>
-<dt><pre><span class="Keyword">proc</span> <a href="#sampleRate%3D%2CWaveWrite%2Cuint16"><span class="Identifier">sampleRate=</span></a><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="wavewrite.html#WaveWrite"><span class="Identifier">WaveWrite</span></a><span class="Other">;</span> <span class="Identifier">sampleRate</span><span class="Other">:</span> <span class="Identifier">uint16</span><span class="Other">)</span> <span><span class="Other">{</span><span class="Other pragmadots">...</span><span class="Other">}</span></span><span class="pragmawrap"><span class="Other">{.</span><span class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span><span class="Other">.}</span></span></pre></dt>
+</div>
+<div id="close,WaveWrite">
+<dt><pre><span class="Keyword">proc</span> <a href="#close%2CWaveWrite"><span class="Identifier">close</span></a><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="wavewrite.html#WaveWrite"><span class="Identifier">WaveWrite</span></a><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">WaveFormatSubChunkError</span><span class="Other">,</span>
+                                       <span class="Identifier">WaveDataIsEmptyError</span><span class="Other">,</span> <span class="Identifier">IOError</span><span class="Other">,</span> <span class="Identifier">OSError</span><span class="Other">,</span>
+                                       <span class="Identifier">Exception</span><span class="Other">]</span><span class="Other">,</span>
+                              <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">WriteIOEffect</span><span class="Other">,</span> <span class="Identifier">ReadIOEffect</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 
 
 </dd>
-<a id="writeFrames,WaveWrite,openArray[byte]"></a>
-<dt><pre><span class="Keyword">proc</span> <a href="#writeFrames%2CWaveWrite%2CopenArray%5Bbyte%5D"><span class="Identifier">writeFrames</span></a><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="wavewrite.html#WaveWrite"><span class="Identifier">WaveWrite</span></a><span class="Other">;</span> <span class="Identifier">data</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">byte</span><span class="Other">]</span><span class="Other">)</span> <span><span class="Other">{</span><span class="Other pragmadots">...</span><span class="Other">}</span></span><span class="pragmawrap"><span class="Other">{.</span><span class="pragma">
-    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Defect</span><span class="Other">,</span> <span class="Identifier">IOError</span><span class="Other">,</span> <span class="Identifier">OSError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">WriteIOEffect</span><span class="Other">]</span></span><span class="Other">.}</span></span></pre></dt>
+</div>
+<div id="numChannels=,WaveWrite,uint16">
+<dt><pre><span class="Keyword">proc</span> <a href="#numChannels%3D%2CWaveWrite%2Cuint16"><span class="Identifier">numChannels=</span></a><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="wavewrite.html#WaveWrite"><span class="Identifier">WaveWrite</span></a><span class="Other">;</span> <span class="Identifier">numChannels</span><span class="Other">:</span> <span class="Identifier">uint16</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 
 
 </dd>
-<a id="openWaveWriteFile,string"></a>
-<dt><pre><span class="Keyword">proc</span> <a href="#openWaveWriteFile%2Cstring"><span class="Identifier">openWaveWriteFile</span></a><span class="Other">(</span><span class="Identifier">fileName</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span><span class="Other">:</span> <a href="wavewrite.html#WaveWrite"><span class="Identifier">WaveWrite</span></a> <span><span class="Other">{</span><span class="Other pragmadots">...</span><span class="Other">}</span></span><span class="pragmawrap"><span class="Other">{.</span><span class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span><span class="Other">.}</span></span></pre></dt>
+</div>
+<div id="openWaveWriteFile,string">
+<dt><pre><span class="Keyword">proc</span> <a href="#openWaveWriteFile%2Cstring"><span class="Identifier">openWaveWriteFile</span></a><span class="Other">(</span><span class="Identifier">fileName</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span><span class="Other">:</span> <a href="wavewrite.html#WaveWrite"><span class="Identifier">WaveWrite</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
-Opens <tt class="docutils literal"><span class="pre">file</span></tt> and returns <a class="reference external" href="#WaveWrite">WaveWrite</a> object. Last, you must <a class="reference external" href="#close,WaveWrite">close</a> <a class="reference external" href="#WaveWrite">WaveWrite</a> object.
+Opens <tt class="docutils literal"><span class="pre"><span class="Identifier">file</span></span></tt> and returns <a class="reference external" href="#WaveWrite">WaveWrite</a> object. Last, you must <a class="reference external" href="#close,WaveWrite">close</a> <a class="reference external" href="#WaveWrite">WaveWrite</a> object.
 
 </dd>
-<a id="close,WaveWrite"></a>
-<dt><pre><span class="Keyword">proc</span> <a href="#close%2CWaveWrite"><span class="Identifier">close</span></a><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="wavewrite.html#WaveWrite"><span class="Identifier">WaveWrite</span></a><span class="Other">)</span> <span><span class="Other">{</span><span class="Other pragmadots">...</span><span class="Other">}</span></span><span class="pragmawrap"><span class="Other">{.</span><span class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">WaveFormatSubChunkError</span><span class="Other">,</span> <span class="Identifier">WaveDataIsEmptyError</span><span class="Other">,</span>
-                                   <span class="Identifier">Defect</span><span class="Other">,</span> <span class="Identifier">IOError</span><span class="Other">,</span> <span class="Identifier">OSError</span><span class="Other">,</span> <span class="Identifier">Exception</span><span class="Other">]</span><span class="Other">,</span>
-                           <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">WriteIOEffect</span><span class="Other">,</span> <span class="Identifier">ReadIOEffect</span><span class="Other">]</span></span><span class="Other">.}</span></span></pre></dt>
-<dd>
-
-
-
-</dd>
-<a id="$,WaveWrite"></a>
-<dt><pre><span class="Keyword">proc</span> <a href="#%24%2CWaveWrite"><span class="Identifier">`$`</span></a><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="wavewrite.html#WaveWrite"><span class="Identifier">WaveWrite</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> <span><span class="Other">{</span><span class="Other pragmadots">...</span><span class="Other">}</span></span><span class="pragmawrap"><span class="Other">{.</span><span class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span><span class="Other">.}</span></span></pre></dt>
+</div>
+<div id="sampleRate=,WaveWrite,uint16">
+<dt><pre><span class="Keyword">proc</span> <a href="#sampleRate%3D%2CWaveWrite%2Cuint16"><span class="Identifier">sampleRate=</span></a><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="wavewrite.html#WaveWrite"><span class="Identifier">WaveWrite</span></a><span class="Other">;</span> <span class="Identifier">sampleRate</span><span class="Other">:</span> <span class="Identifier">uint16</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 
 
 </dd>
+</div>
+<div id="writeFrames,WaveWrite,openArray[byte]">
+<dt><pre><span class="Keyword">proc</span> <a href="#writeFrames%2CWaveWrite%2CopenArray%5Bbyte%5D"><span class="Identifier">writeFrames</span></a><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="wavewrite.html#WaveWrite"><span class="Identifier">WaveWrite</span></a><span class="Other">;</span> <span class="Identifier">data</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">byte</span><span class="Other">]</span><span class="Other">)</span> {.
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">IOError</span><span class="Other">,</span> <span class="Identifier">OSError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">WriteIOEffect</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+
+
+</dd>
+</div>
 
 </dl></div>
 <div class="section" id="19">
 <h1><a class="toc-backref" href="#19">Exports</a></h1>
 <dl class="item">
-<a href="wavetypes.html#WAVE_FORMAT_LH_CODEC"><span class="Identifier">WAVE_FORMAT_LH_CODEC</span></a>, <a href="wavetypes.html#WAVE_FORMAT_PROSODY_1612"><span class="Identifier">WAVE_FORMAT_PROSODY_1612</span></a>, <a href="wavetypes.html#WAVE_FORMAT_VOXWARE_RT29HW"><span class="Identifier">WAVE_FORMAT_VOXWARE_RT29HW</span></a>, <a href="wavetypes.html#WAVE_FORMAT_CREATIVE_ADPCM"><span class="Identifier">WAVE_FORMAT_CREATIVE_ADPCM</span></a>, <a href="wavetypes.html#WAVE_FORMAT_DOLBY_AC3_SPDIF"><span class="Identifier">WAVE_FORMAT_DOLBY_AC3_SPDIF</span></a>, <a href="wavetypes.html#WAVE_FORMAT_G726_ADPCM"><span class="Identifier">WAVE_FORMAT_G726_ADPCM</span></a>, <a href="wavetypes.html#WAVE_FORMAT_AUDIOFILE_AF10"><span class="Identifier">WAVE_FORMAT_AUDIOFILE_AF10</span></a>, <a href="wavetypes.html#$"><span class="Identifier">$</span></a>, <a href="wavetypes.html#WAVE_FORMAT_VOXWARE_BYTE_ALIGNED"><span class="Identifier">WAVE_FORMAT_VOXWARE_BYTE_ALIGNED</span></a>, <a href="wavetypes.html#WAVE_FORMAT_APTX"><span class="Identifier">WAVE_FORMAT_APTX</span></a>, <a href="wavetypes.html#WAVE_FORMAT_CANOPUS_ATRAC"><span class="Identifier">WAVE_FORMAT_CANOPUS_ATRAC</span></a>, <a href="wavetypes.html#noteSubChunkId"><span class="Identifier">noteSubChunkId</span></a>, <a href="wavetypes.html#WAVE_FORMAT_G722_ADPCM"><span class="Identifier">WAVE_FORMAT_G722_ADPCM</span></a>, <a href="wavetypes.html#WaveDataIsEmptyError"><span class="Identifier">WaveDataIsEmptyError</span></a>, <a href="wavetypes.html#WaveFormatSubChunkError"><span class="Identifier">WaveFormatSubChunkError</span></a>, <a href="wavetypes.html#WaveDataSubChunkError"><span class="Identifier">WaveDataSubChunkError</span></a>, <a href="wavetypes.html#WAVE_FORMAT_MPEG"><span class="Identifier">WAVE_FORMAT_MPEG</span></a>, <a href="wavetypes.html#WaveRIFFChunkDescriptorError"><span class="Identifier">WaveRIFFChunkDescriptorError</span></a>, <a href="wavetypes.html#WAVE_FORMAT_CIRRUS"><span class="Identifier">WAVE_FORMAT_CIRRUS</span></a>, <a href="wavetypes.html#WAVE_FORMAT_GSM610"><span class="Identifier">WAVE_FORMAT_GSM610</span></a>, <a href="wavetypes.html#WAVE_FORMAT_XEBEC"><span class="Identifier">WAVE_FORMAT_XEBEC</span></a>, <a href="wavetypes.html#WAVE_FORMAT_IMA_ADPCM"><span class="Identifier">WAVE_FORMAT_IMA_ADPCM</span></a>, <a href="wavetypes.html#WAVE_FORMAT_CU_CODEC"><span class="Identifier">WAVE_FORMAT_CU_CODEC</span></a>, <a href="wavetypes.html#numChannelsMono"><span class="Identifier">numChannelsMono</span></a>, <a href="wavetypes.html#WAVE_FORMAT_RT24"><span class="Identifier">WAVE_FORMAT_RT24</span></a>, <a href="wavetypes.html#WAVE_FORMAT_DIGISTD"><span class="Identifier">WAVE_FORMAT_DIGISTD</span></a>, <a href="wavetypes.html#WAVE_FORMAT_ONLIVE"><span class="Identifier">WAVE_FORMAT_ONLIVE</span></a>, <a href="wavetypes.html#WAVE_FORMAT_UNKNOWN"><span class="Identifier">WAVE_FORMAT_UNKNOWN</span></a>, <a href="wavetypes.html#WAVE_FORMAT_DOLBY_AC2"><span class="Identifier">WAVE_FORMAT_DOLBY_AC2</span></a>, <a href="wavetypes.html#dataSubChunkId"><span class="Identifier">dataSubChunkId</span></a>, <a href="wavetypes.html#IBM_FORMAT_ADPCM"><span class="Identifier">IBM_FORMAT_ADPCM</span></a>, <a href="wavetypes.html#WAVE_FORMAT_LRC"><span class="Identifier">WAVE_FORMAT_LRC</span></a>, <a href="wavetypes.html#WAVE_FORMAT_ALAW"><span class="Identifier">WAVE_FORMAT_ALAW</span></a>, <a href="wavetypes.html#WAVE_FORMAT_DVM"><span class="Identifier">WAVE_FORMAT_DVM</span></a>, <a href="wavetypes.html#WAVE_FORMAT_DSAT_DISPLAY"><span class="Identifier">WAVE_FORMAT_DSAT_DISPLAY</span></a>, <a href="wavetypes.html#DataSubChunk"><span class="Identifier">DataSubChunk</span></a>, <a href="wavetypes.html#WAVE_FORMAT_SIERRA_ADPCM"><span class="Identifier">WAVE_FORMAT_SIERRA_ADPCM</span></a>, <a href="wavetypes.html#WAVE_FORMAT_PAC"><span class="Identifier">WAVE_FORMAT_PAC</span></a>, <a href="wavetypes.html#smplSubChunkId"><span class="Identifier">smplSubChunkId</span></a>, <a href="wavetypes.html#WAVE_FORMAT_RHETOREX_ADPCM"><span class="Identifier">WAVE_FORMAT_RHETOREX_ADPCM</span></a>, <a href="wavetypes.html#listSubChunkId"><span class="Identifier">listSubChunkId</span></a>, <a href="wavetypes.html#WAVE_FORMAT_G728_CELP"><span class="Identifier">WAVE_FORMAT_G728_CELP</span></a>, <a href="wavetypes.html#plstSubChunkId"><span class="Identifier">plstSubChunkId</span></a>, <a href="wavetypes.html#WAVE_FORMAT_PACKED"><span class="Identifier">WAVE_FORMAT_PACKED</span></a>, <a href="wavetypes.html#WAVE_FORMAT_G723_ADPCM"><span class="Identifier">WAVE_FORMAT_G723_ADPCM</span></a>, <a href="wavetypes.html#WAVE_FORMAT_DSPGROUP_TRUESPEECH"><span class="Identifier">WAVE_FORMAT_DSPGROUP_TRUESPEECH</span></a>, <a href="wavetypes.html#$"><span class="Identifier">$</span></a>, <a href="wavetypes.html#WAVE_FORMAT_DF_G726"><span class="Identifier">WAVE_FORMAT_DF_G726</span></a>, <a href="wavetypes.html#WAVE_FORMAT_INTERWAV_VSC112"><span class="Identifier">WAVE_FORMAT_INTERWAV_VSC112</span></a>, <a href="wavetypes.html#WAVE_FORMAT_ROCKWELL_DIGITALK"><span class="Identifier">WAVE_FORMAT_ROCKWELL_DIGITALK</span></a>, <a href="wavetypes.html#WAVE_FORMAT_MULAW"><span class="Identifier">WAVE_FORMAT_MULAW</span></a>, <a href="wavetypes.html#WAVE_FORMAT_SOFTSOUND"><span class="Identifier">WAVE_FORMAT_SOFTSOUND</span></a>, <a href="wavetypes.html#WAVE_FORMAT_OLIOPR"><span class="Identifier">WAVE_FORMAT_OLIOPR</span></a>, <a href="wavetypes.html#WAVE_FORMAT_VOXWARE_TQ40"><span class="Identifier">WAVE_FORMAT_VOXWARE_TQ40</span></a>, <a href="wavetypes.html#WAVE_FORMAT_MEDIAVISION_ADPCM"><span class="Identifier">WAVE_FORMAT_MEDIAVISION_ADPCM</span></a>, <a href="wavetypes.html#instSubChunkId"><span class="Identifier">instSubChunkId</span></a>, <a href="wavetypes.html#WAVE_FORMAT_CONTROL_RES_VQLPC"><span class="Identifier">WAVE_FORMAT_CONTROL_RES_VQLPC</span></a>, <a href="wavetypes.html#IBM_FORMAT_ALAW"><span class="Identifier">IBM_FORMAT_ALAW</span></a>, <a href="wavetypes.html#WAVE_FORMAT_IBM_CVSD"><span class="Identifier">WAVE_FORMAT_IBM_CVSD</span></a>, <a href="wavetypes.html#WAVE_FORMAT_NORRIS"><span class="Identifier">WAVE_FORMAT_NORRIS</span></a>, <a href="wavetypes.html#WAVE_FORMAT_ANTEX_ADPCME"><span class="Identifier">WAVE_FORMAT_ANTEX_ADPCME</span></a>, <a href="wavetypes.html#WAVE_FORMAT_YAMAHA_ADPCM"><span class="Identifier">WAVE_FORMAT_YAMAHA_ADPCM</span></a>, <a href="wavetypes.html#WAVE_FORMAT_VOXWARE_VR12"><span class="Identifier">WAVE_FORMAT_VOXWARE_VR12</span></a>, <a href="wavetypes.html#WAVE_FORMAT_MVI_MV12"><span class="Identifier">WAVE_FORMAT_MVI_MV12</span></a>, <a href="wavetypes.html#cueSubChunkId"><span class="Identifier">cueSubChunkId</span></a>, <a href="wavetypes.html#WAVE_FORMAT_CREATIVE_FASTSPEECH10"><span class="Identifier">WAVE_FORMAT_CREATIVE_FASTSPEECH10</span></a>, <a href="wavetypes.html#WAVE_FORMAT_OKI_ADPCM"><span class="Identifier">WAVE_FORMAT_OKI_ADPCM</span></a>, <a href="wavetypes.html#WAVE_FORMAT_VOXWARE_RT24"><span class="Identifier">WAVE_FORMAT_VOXWARE_RT24</span></a>, <a href="wavetypes.html#WAVE_FORMAT_QUARTERDECK"><span class="Identifier">WAVE_FORMAT_QUARTERDECK</span></a>, <a href="wavetypes.html#WAVE_FORMAT_IEEE_FLOAT"><span class="Identifier">WAVE_FORMAT_IEEE_FLOAT</span></a>, <a href="wavetypes.html#WAVE_FORMAT_DIGIREAL"><span class="Identifier">WAVE_FORMAT_DIGIREAL</span></a>, <a href="wavetypes.html#WAVE_FORMAT_VSELP"><span class="Identifier">WAVE_FORMAT_VSELP</span></a>, <a href="wavetypes.html#WAVE_FORMAT_DIALOGIC_OKI_ADPCM"><span class="Identifier">WAVE_FORMAT_DIALOGIC_OKI_ADPCM</span></a>, <a href="wavetypes.html#$"><span class="Identifier">$</span></a>, <a href="wavetypes.html#WAVE_FORMAT_BZV_DIGITAL"><span class="Identifier">WAVE_FORMAT_BZV_DIGITAL</span></a>, <a href="wavetypes.html#WAVE_FORMAT_G729A"><span class="Identifier">WAVE_FORMAT_G729A</span></a>, <a href="wavetypes.html#WAVE_FORMAT_PCM"><span class="Identifier">WAVE_FORMAT_PCM</span></a>, <a href="wavetypes.html#WAVE_FORMAT_MSG723"><span class="Identifier">WAVE_FORMAT_MSG723</span></a>, <a href="wavetypes.html#WAVE_FORMAT_SOUNDSPACE_MUSICOMPRESS"><span class="Identifier">WAVE_FORMAT_SOUNDSPACE_MUSICOMPRESS</span></a>, <a href="wavetypes.html#WAVE_FORMAT_DIGITAL_G723"><span class="Identifier">WAVE_FORMAT_DIGITAL_G723</span></a>, <a href="wavetypes.html#WaveFactSubChunkError"><span class="Identifier">WaveFactSubChunkError</span></a>, <a href="wavetypes.html#WAVE_FORMAT_VOXWARE_AC10"><span class="Identifier">WAVE_FORMAT_VOXWARE_AC10</span></a>, <a href="wavetypes.html#WAVE_FORMAT_ZYXEL_ADPCM"><span class="Identifier">WAVE_FORMAT_ZYXEL_ADPCM</span></a>, <a href="wavetypes.html#WAVE_FORMAT_AUDIOFILE_AF36"><span class="Identifier">WAVE_FORMAT_AUDIOFILE_AF36</span></a>, <a href="wavetypes.html#WAVE_FORMAT_VIVO_SIREN"><span class="Identifier">WAVE_FORMAT_VIVO_SIREN</span></a>, <a href="wavetypes.html#WAVE_FORMAT_CREATIVE_FASTSPEECH8"><span class="Identifier">WAVE_FORMAT_CREATIVE_FASTSPEECH8</span></a>, <a href="wavetypes.html#riffChunkDescriptorId"><span class="Identifier">riffChunkDescriptorId</span></a>, <a href="wavetypes.html#WAVE_FORMAT_VOXWARE_VR18"><span class="Identifier">WAVE_FORMAT_VOXWARE_VR18</span></a>, <a href="wavetypes.html#WAVE_FORMAT_SONARC"><span class="Identifier">WAVE_FORMAT_SONARC</span></a>, <a href="wavetypes.html#WAVE_FORMAT_DSAT"><span class="Identifier">WAVE_FORMAT_DSAT</span></a>, <a href="wavetypes.html#formatSubChunkId"><span class="Identifier">formatSubChunkId</span></a>, <a href="wavetypes.html#FactSubChunk"><span class="Identifier">FactSubChunk</span></a>, <a href="wavetypes.html#WAVE_FORMAT_DIGIFIX"><span class="Identifier">WAVE_FORMAT_DIGIFIX</span></a>, <a href="wavetypes.html#WaveFormatError"><span class="Identifier">WaveFormatError</span></a>, <a href="wavetypes.html#WAVE_FORMAT_VOXWARE_AC8"><span class="Identifier">WAVE_FORMAT_VOXWARE_AC8</span></a>, <a href="wavetypes.html#numChannelsStereo"><span class="Identifier">numChannelsStereo</span></a>, <a href="wavetypes.html#WAVE_FORMAT_SBC24"><span class="Identifier">WAVE_FORMAT_SBC24</span></a>, <a href="wavetypes.html#WAVE_FORMAT_LUCENT_G723"><span class="Identifier">WAVE_FORMAT_LUCENT_G723</span></a>, <a href="wavetypes.html#riffChunkDescriptorType"><span class="Identifier">riffChunkDescriptorType</span></a>, <a href="wavetypes.html#WAVE_FORMAT_MPEGLAYER3"><span class="Identifier">WAVE_FORMAT_MPEGLAYER3</span></a>, <a href="wavetypes.html#WAVE_FORMAT_VOXWARE_AC20"><span class="Identifier">WAVE_FORMAT_VOXWARE_AC20</span></a>, <a href="wavetypes.html#WAVE_FORMAT_VOXARE_TQ60"><span class="Identifier">WAVE_FORMAT_VOXARE_TQ60</span></a>, <a href="wavetypes.html#WAVE_FORMAT_ECHOSC3"><span class="Identifier">WAVE_FORMAT_ECHOSC3</span></a>, <a href="wavetypes.html#WAVE_FORMAT_ESPCM"><span class="Identifier">WAVE_FORMAT_ESPCM</span></a>, <a href="wavetypes.html#$"><span class="Identifier">$</span></a>, <a href="wavetypes.html#WAVE_FORMAT_CONTROL_RES_CR10"><span class="Identifier">WAVE_FORMAT_CONTROL_RES_CR10</span></a>, <a href="wavetypes.html#WAVE_FORMAT_MEDIASPACE_ADPCM"><span class="Identifier">WAVE_FORMAT_MEDIASPACE_ADPCM</span></a>, <a href="wavetypes.html#WAVE_FORMAT_NMS_VBXADPCM"><span class="Identifier">WAVE_FORMAT_NMS_VBXADPCM</span></a>, <a href="wavetypes.html#WAVE_FORMAT_PHILIPS_LPCBB"><span class="Identifier">WAVE_FORMAT_PHILIPS_LPCBB</span></a>, <a href="wavetypes.html#newFormatSubChunk"><span class="Identifier">newFormatSubChunk</span></a>, <a href="wavetypes.html#WAVE_FORMAT_VOXWARE"><span class="Identifier">WAVE_FORMAT_VOXWARE</span></a>, <a href="wavetypes.html#WAVE_FORMAT_MSNAUDIO"><span class="Identifier">WAVE_FORMAT_MSNAUDIO</span></a>, <a href="wavetypes.html#newRIFFChunkDescriptor"><span class="Identifier">newRIFFChunkDescriptor</span></a>, <a href="wavetypes.html#WAVE_FORMAT_ROLAND_RDAC"><span class="Identifier">WAVE_FORMAT_ROLAND_RDAC</span></a>, <a href="wavetypes.html#lablSubChunkId"><span class="Identifier">lablSubChunkId</span></a>, <a href="wavetypes.html#factSubChunkId"><span class="Identifier">factSubChunkId</span></a>, <a href="wavetypes.html#WAVE_FORMAT_DIGIADPCM"><span class="Identifier">WAVE_FORMAT_DIGIADPCM</span></a>, <a href="wavetypes.html#WAVE_FORMAT_VOXWARE_RT29"><span class="Identifier">WAVE_FORMAT_VOXWARE_RT29</span></a>, <a class="reference external" href="wavetypes.html">wavetypes</a>, <a href="wavetypes.html#WAVE_FORMAT_MSRT24"><span class="Identifier">WAVE_FORMAT_MSRT24</span></a>, <a href="wavetypes.html#WAVE_FORMAT_OLIGSM"><span class="Identifier">WAVE_FORMAT_OLIGSM</span></a>, <a href="wavetypes.html#IBM_FORMAT_MULAW"><span class="Identifier">IBM_FORMAT_MULAW</span></a>, <a href="wavetypes.html#WAVE_FORMAT_EXTENSIBLE"><span class="Identifier">WAVE_FORMAT_EXTENSIBLE</span></a>, <a href="wavetypes.html#WAVE_FORMAT_MS_ADPCM"><span class="Identifier">WAVE_FORMAT_MS_ADPCM</span></a>, <a href="wavetypes.html#newDataSubChunk"><span class="Identifier">newDataSubChunk</span></a>, <a href="wavetypes.html#ltxtSubChunkId"><span class="Identifier">ltxtSubChunkId</span></a>, <a href="wavetypes.html#WAVE_FORMAT_FM_TOWNS_SND"><span class="Identifier">WAVE_FORMAT_FM_TOWNS_SND</span></a>, <a href="wavetypes.html#WAVE_FORMAT_ROCKWELL_ADPCM"><span class="Identifier">WAVE_FORMAT_ROCKWELL_ADPCM</span></a>, <a href="wavetypes.html#WAVE_FORMAT_ECHOSC1"><span class="Identifier">WAVE_FORMAT_ECHOSC1</span></a>, <a href="wavetypes.html#FormatSubChunk"><span class="Identifier">FormatSubChunk</span></a>, <a href="wavetypes.html#WAVE_FORMAT_VOXWARE_AC16"><span class="Identifier">WAVE_FORMAT_VOXWARE_AC16</span></a>, <a href="wavetypes.html#RIFFChunkDescriptor"><span class="Identifier">RIFFChunkDescriptor</span></a>, <a href="wavetypes.html#WAVE_FORMAT_G721_ADPCM"><span class="Identifier">WAVE_FORMAT_G721_ADPCM</span></a>, <a href="wavetypes.html#WAVE_FORMAT_OLIADPCM"><span class="Identifier">WAVE_FORMAT_OLIADPCM</span></a>, <a href="wavetypes.html#WAVE_FORMAT_OLISBC"><span class="Identifier">WAVE_FORMAT_OLISBC</span></a>, <a href="wavetypes.html#WAVE_FORMAT_OLICELP"><span class="Identifier">WAVE_FORMAT_OLICELP</span></a>, <a href="wavetypes.html#WAVE_FORMAT_DF_GSM610"><span class="Identifier">WAVE_FORMAT_DF_GSM610</span></a>, <a href="wavetypes.html#WAVE_FORMAT_VIVO_G723"><span class="Identifier">WAVE_FORMAT_VIVO_G723</span></a>, <a href="wavetypes.html#WAVE_FORMAT_VME_VMPCM"><span class="Identifier">WAVE_FORMAT_VME_VMPCM</span></a>
+<a href="wavetypes.html#WAVE_FORMAT_LH_CODEC"><span class="Identifier">WAVE_FORMAT_LH_CODEC</span></a>, <a href="wavetypes.html#WAVE_FORMAT_PROSODY_1612"><span class="Identifier">WAVE_FORMAT_PROSODY_1612</span></a>, <a href="wavetypes.html#WAVE_FORMAT_VOXWARE_RT29HW"><span class="Identifier">WAVE_FORMAT_VOXWARE_RT29HW</span></a>, <a href="wavetypes.html#WAVE_FORMAT_DIGITAL_G723"><span class="Identifier">WAVE_FORMAT_DIGITAL_G723</span></a>, <a href="wavetypes.html#WAVE_FORMAT_DOLBY_AC3_SPDIF"><span class="Identifier">WAVE_FORMAT_DOLBY_AC3_SPDIF</span></a>, <a href="wavetypes.html#WAVE_FORMAT_G726_ADPCM"><span class="Identifier">WAVE_FORMAT_G726_ADPCM</span></a>, <a href="wavetypes.html#WAVE_FORMAT_AUDIOFILE_AF10"><span class="Identifier">WAVE_FORMAT_AUDIOFILE_AF10</span></a>, <a href="wavetypes.html#$,DataSubChunk"><span class="Identifier">$</span></a>, <a href="wavetypes.html#WAVE_FORMAT_VOXWARE_BYTE_ALIGNED"><span class="Identifier">WAVE_FORMAT_VOXWARE_BYTE_ALIGNED</span></a>, <a href="wavetypes.html#WAVE_FORMAT_APTX"><span class="Identifier">WAVE_FORMAT_APTX</span></a>, <a href="wavetypes.html#WAVE_FORMAT_CANOPUS_ATRAC"><span class="Identifier">WAVE_FORMAT_CANOPUS_ATRAC</span></a>, <a href="wavetypes.html#noteSubChunkId"><span class="Identifier">noteSubChunkId</span></a>, <a href="wavetypes.html#WAVE_FORMAT_G722_ADPCM"><span class="Identifier">WAVE_FORMAT_G722_ADPCM</span></a>, <a href="wavetypes.html#WaveDataIsEmptyError"><span class="Identifier">WaveDataIsEmptyError</span></a>, <a href="wavetypes.html#WaveFormatSubChunkError"><span class="Identifier">WaveFormatSubChunkError</span></a>, <a href="wavetypes.html#WaveDataSubChunkError"><span class="Identifier">WaveDataSubChunkError</span></a>, <a href="wavetypes.html#WAVE_FORMAT_MPEG"><span class="Identifier">WAVE_FORMAT_MPEG</span></a>, <a href="wavetypes.html#WaveRIFFChunkDescriptorError"><span class="Identifier">WaveRIFFChunkDescriptorError</span></a>, <a href="wavetypes.html#WAVE_FORMAT_CIRRUS"><span class="Identifier">WAVE_FORMAT_CIRRUS</span></a>, <a href="wavetypes.html#WAVE_FORMAT_GSM610"><span class="Identifier">WAVE_FORMAT_GSM610</span></a>, <a href="wavetypes.html#WAVE_FORMAT_XEBEC"><span class="Identifier">WAVE_FORMAT_XEBEC</span></a>, <a href="wavetypes.html#WAVE_FORMAT_IMA_ADPCM"><span class="Identifier">WAVE_FORMAT_IMA_ADPCM</span></a>, <a href="wavetypes.html#WAVE_FORMAT_CU_CODEC"><span class="Identifier">WAVE_FORMAT_CU_CODEC</span></a>, <a href="wavetypes.html#numChannelsMono"><span class="Identifier">numChannelsMono</span></a>, <a href="wavetypes.html#WAVE_FORMAT_RT24"><span class="Identifier">WAVE_FORMAT_RT24</span></a>, <a href="wavetypes.html#WAVE_FORMAT_DIGISTD"><span class="Identifier">WAVE_FORMAT_DIGISTD</span></a>, <a href="wavetypes.html#WAVE_FORMAT_ONLIVE"><span class="Identifier">WAVE_FORMAT_ONLIVE</span></a>, <a href="wavetypes.html#WAVE_FORMAT_UNKNOWN"><span class="Identifier">WAVE_FORMAT_UNKNOWN</span></a>, <a href="wavetypes.html#WAVE_FORMAT_DOLBY_AC2"><span class="Identifier">WAVE_FORMAT_DOLBY_AC2</span></a>, <a href="wavetypes.html#dataSubChunkId"><span class="Identifier">dataSubChunkId</span></a>, <a href="wavetypes.html#FactSubChunk"><span class="Identifier">FactSubChunk</span></a>, <a href="wavetypes.html#WAVE_FORMAT_LRC"><span class="Identifier">WAVE_FORMAT_LRC</span></a>, <a href="wavetypes.html#WAVE_FORMAT_ALAW"><span class="Identifier">WAVE_FORMAT_ALAW</span></a>, <a href="wavetypes.html#WAVE_FORMAT_DVM"><span class="Identifier">WAVE_FORMAT_DVM</span></a>, <a href="wavetypes.html#WAVE_FORMAT_DSAT_DISPLAY"><span class="Identifier">WAVE_FORMAT_DSAT_DISPLAY</span></a>, <a href="wavetypes.html#DataSubChunk"><span class="Identifier">DataSubChunk</span></a>, <a href="wavetypes.html#WAVE_FORMAT_SIERRA_ADPCM"><span class="Identifier">WAVE_FORMAT_SIERRA_ADPCM</span></a>, <a href="wavetypes.html#WAVE_FORMAT_PAC"><span class="Identifier">WAVE_FORMAT_PAC</span></a>, <a href="wavetypes.html#smplSubChunkId"><span class="Identifier">smplSubChunkId</span></a>, <a href="wavetypes.html#WAVE_FORMAT_RHETOREX_ADPCM"><span class="Identifier">WAVE_FORMAT_RHETOREX_ADPCM</span></a>, <a href="wavetypes.html#listSubChunkId"><span class="Identifier">listSubChunkId</span></a>, <a href="wavetypes.html#WAVE_FORMAT_G728_CELP"><span class="Identifier">WAVE_FORMAT_G728_CELP</span></a>, <a href="wavetypes.html#plstSubChunkId"><span class="Identifier">plstSubChunkId</span></a>, <a href="wavetypes.html#WAVE_FORMAT_PACKED"><span class="Identifier">WAVE_FORMAT_PACKED</span></a>, <a href="wavetypes.html#WAVE_FORMAT_G723_ADPCM"><span class="Identifier">WAVE_FORMAT_G723_ADPCM</span></a>, <a href="wavetypes.html#WAVE_FORMAT_DSPGROUP_TRUESPEECH"><span class="Identifier">WAVE_FORMAT_DSPGROUP_TRUESPEECH</span></a>, <a href="wavetypes.html#$,FactSubChunk"><span class="Identifier">$</span></a>, <a href="wavetypes.html#WAVE_FORMAT_DF_G726"><span class="Identifier">WAVE_FORMAT_DF_G726</span></a>, <a href="wavetypes.html#WAVE_FORMAT_INTERWAV_VSC112"><span class="Identifier">WAVE_FORMAT_INTERWAV_VSC112</span></a>, <a href="wavetypes.html#WAVE_FORMAT_ROCKWELL_DIGITALK"><span class="Identifier">WAVE_FORMAT_ROCKWELL_DIGITALK</span></a>, <a href="wavetypes.html#WAVE_FORMAT_MULAW"><span class="Identifier">WAVE_FORMAT_MULAW</span></a>, <a href="wavetypes.html#WAVE_FORMAT_SOFTSOUND"><span class="Identifier">WAVE_FORMAT_SOFTSOUND</span></a>, <a href="wavetypes.html#WAVE_FORMAT_OLIOPR"><span class="Identifier">WAVE_FORMAT_OLIOPR</span></a>, <a href="wavetypes.html#WAVE_FORMAT_VOXWARE_TQ40"><span class="Identifier">WAVE_FORMAT_VOXWARE_TQ40</span></a>, <a href="wavetypes.html#WAVE_FORMAT_MEDIAVISION_ADPCM"><span class="Identifier">WAVE_FORMAT_MEDIAVISION_ADPCM</span></a>, <a href="wavetypes.html#instSubChunkId"><span class="Identifier">instSubChunkId</span></a>, <a href="wavetypes.html#WAVE_FORMAT_CONTROL_RES_VQLPC"><span class="Identifier">WAVE_FORMAT_CONTROL_RES_VQLPC</span></a>, <a href="wavetypes.html#IBM_FORMAT_ALAW"><span class="Identifier">IBM_FORMAT_ALAW</span></a>, <a href="wavetypes.html#IBM_FORMAT_ADPCM"><span class="Identifier">IBM_FORMAT_ADPCM</span></a>, <a href="wavetypes.html#WAVE_FORMAT_NORRIS"><span class="Identifier">WAVE_FORMAT_NORRIS</span></a>, <a href="wavetypes.html#WAVE_FORMAT_ANTEX_ADPCME"><span class="Identifier">WAVE_FORMAT_ANTEX_ADPCME</span></a>, <a href="wavetypes.html#WAVE_FORMAT_YAMAHA_ADPCM"><span class="Identifier">WAVE_FORMAT_YAMAHA_ADPCM</span></a>, <a href="wavetypes.html#WAVE_FORMAT_VOXWARE_VR12"><span class="Identifier">WAVE_FORMAT_VOXWARE_VR12</span></a>, <a href="wavetypes.html#WAVE_FORMAT_IBM_CVSD"><span class="Identifier">WAVE_FORMAT_IBM_CVSD</span></a>, <a href="wavetypes.html#WAVE_FORMAT_MVI_MV12"><span class="Identifier">WAVE_FORMAT_MVI_MV12</span></a>, <a href="wavetypes.html#cueSubChunkId"><span class="Identifier">cueSubChunkId</span></a>, <a href="wavetypes.html#WAVE_FORMAT_CREATIVE_FASTSPEECH10"><span class="Identifier">WAVE_FORMAT_CREATIVE_FASTSPEECH10</span></a>, <a href="wavetypes.html#WAVE_FORMAT_OKI_ADPCM"><span class="Identifier">WAVE_FORMAT_OKI_ADPCM</span></a>, <a href="wavetypes.html#WAVE_FORMAT_VOXWARE_RT24"><span class="Identifier">WAVE_FORMAT_VOXWARE_RT24</span></a>, <a href="wavetypes.html#WAVE_FORMAT_QUARTERDECK"><span class="Identifier">WAVE_FORMAT_QUARTERDECK</span></a>, <a href="wavetypes.html#WAVE_FORMAT_DIGIREAL"><span class="Identifier">WAVE_FORMAT_DIGIREAL</span></a>, <a href="wavetypes.html#WAVE_FORMAT_VSELP"><span class="Identifier">WAVE_FORMAT_VSELP</span></a>, <a href="wavetypes.html#WAVE_FORMAT_DIALOGIC_OKI_ADPCM"><span class="Identifier">WAVE_FORMAT_DIALOGIC_OKI_ADPCM</span></a>, <a href="wavetypes.html#$,RIFFChunkDescriptor"><span class="Identifier">$</span></a>, <a href="wavetypes.html#WAVE_FORMAT_BZV_DIGITAL"><span class="Identifier">WAVE_FORMAT_BZV_DIGITAL</span></a>, <a href="wavetypes.html#WAVE_FORMAT_G729A"><span class="Identifier">WAVE_FORMAT_G729A</span></a>, <a href="wavetypes.html#WAVE_FORMAT_PCM"><span class="Identifier">WAVE_FORMAT_PCM</span></a>, <a href="wavetypes.html#WAVE_FORMAT_G721_ADPCM"><span class="Identifier">WAVE_FORMAT_G721_ADPCM</span></a>, <a href="wavetypes.html#WAVE_FORMAT_SOUNDSPACE_MUSICOMPRESS"><span class="Identifier">WAVE_FORMAT_SOUNDSPACE_MUSICOMPRESS</span></a>, <a href="wavetypes.html#WaveFactSubChunkError"><span class="Identifier">WaveFactSubChunkError</span></a>, <a href="wavetypes.html#WAVE_FORMAT_VOXWARE_AC10"><span class="Identifier">WAVE_FORMAT_VOXWARE_AC10</span></a>, <a href="wavetypes.html#WAVE_FORMAT_ZYXEL_ADPCM"><span class="Identifier">WAVE_FORMAT_ZYXEL_ADPCM</span></a>, <a href="wavetypes.html#WAVE_FORMAT_AUDIOFILE_AF36"><span class="Identifier">WAVE_FORMAT_AUDIOFILE_AF36</span></a>, <a href="wavetypes.html#WAVE_FORMAT_VIVO_SIREN"><span class="Identifier">WAVE_FORMAT_VIVO_SIREN</span></a>, <a href="wavetypes.html#WAVE_FORMAT_CREATIVE_FASTSPEECH8"><span class="Identifier">WAVE_FORMAT_CREATIVE_FASTSPEECH8</span></a>, <a href="wavetypes.html#riffChunkDescriptorId"><span class="Identifier">riffChunkDescriptorId</span></a>, <a href="wavetypes.html#WAVE_FORMAT_VOXWARE_VR18"><span class="Identifier">WAVE_FORMAT_VOXWARE_VR18</span></a>, <a href="wavetypes.html#WAVE_FORMAT_SONARC"><span class="Identifier">WAVE_FORMAT_SONARC</span></a>, <a href="wavetypes.html#WAVE_FORMAT_DSAT"><span class="Identifier">WAVE_FORMAT_DSAT</span></a>, <a href="wavetypes.html#formatSubChunkId"><span class="Identifier">formatSubChunkId</span></a>, <a href="wavetypes.html#WAVE_FORMAT_IEEE_FLOAT"><span class="Identifier">WAVE_FORMAT_IEEE_FLOAT</span></a>, <a href="wavetypes.html#WAVE_FORMAT_DIGIFIX"><span class="Identifier">WAVE_FORMAT_DIGIFIX</span></a>, <a href="wavetypes.html#WaveFormatError"><span class="Identifier">WaveFormatError</span></a>, <a href="wavetypes.html#WAVE_FORMAT_VOXWARE_AC8"><span class="Identifier">WAVE_FORMAT_VOXWARE_AC8</span></a>, <a href="wavetypes.html#newDataSubChunk"><span class="Identifier">newDataSubChunk</span></a>, <a href="wavetypes.html#numChannelsStereo"><span class="Identifier">numChannelsStereo</span></a>, <a href="wavetypes.html#WAVE_FORMAT_SBC24"><span class="Identifier">WAVE_FORMAT_SBC24</span></a>, <a href="wavetypes.html#WAVE_FORMAT_LUCENT_G723"><span class="Identifier">WAVE_FORMAT_LUCENT_G723</span></a>, <a href="wavetypes.html#riffChunkDescriptorType"><span class="Identifier">riffChunkDescriptorType</span></a>, <a href="wavetypes.html#WAVE_FORMAT_MPEGLAYER3"><span class="Identifier">WAVE_FORMAT_MPEGLAYER3</span></a>, <a href="wavetypes.html#WAVE_FORMAT_VOXWARE_AC20"><span class="Identifier">WAVE_FORMAT_VOXWARE_AC20</span></a>, <a href="wavetypes.html#WAVE_FORMAT_VOXARE_TQ60"><span class="Identifier">WAVE_FORMAT_VOXARE_TQ60</span></a>, <a href="wavetypes.html#WAVE_FORMAT_ECHOSC3"><span class="Identifier">WAVE_FORMAT_ECHOSC3</span></a>, <a href="wavetypes.html#WAVE_FORMAT_ESPCM"><span class="Identifier">WAVE_FORMAT_ESPCM</span></a>, <a href="wavetypes.html#$,FormatSubChunk"><span class="Identifier">$</span></a>, <a href="wavetypes.html#WAVE_FORMAT_CONTROL_RES_CR10"><span class="Identifier">WAVE_FORMAT_CONTROL_RES_CR10</span></a>, <a href="wavetypes.html#WAVE_FORMAT_MEDIASPACE_ADPCM"><span class="Identifier">WAVE_FORMAT_MEDIASPACE_ADPCM</span></a>, <a href="wavetypes.html#WAVE_FORMAT_NMS_VBXADPCM"><span class="Identifier">WAVE_FORMAT_NMS_VBXADPCM</span></a>, <a href="wavetypes.html#WAVE_FORMAT_PHILIPS_LPCBB"><span class="Identifier">WAVE_FORMAT_PHILIPS_LPCBB</span></a>, <a href="wavetypes.html#newFormatSubChunk,uint16,uint16,uint32,uint32,uint16,uint16"><span class="Identifier">newFormatSubChunk</span></a>, <a href="wavetypes.html#WAVE_FORMAT_VOXWARE"><span class="Identifier">WAVE_FORMAT_VOXWARE</span></a>, <a href="wavetypes.html#WAVE_FORMAT_MSNAUDIO"><span class="Identifier">WAVE_FORMAT_MSNAUDIO</span></a>, <a href="wavetypes.html#newRIFFChunkDescriptor,openArray[byte]"><span class="Identifier">newRIFFChunkDescriptor</span></a>, <a href="wavetypes.html#WAVE_FORMAT_ROLAND_RDAC"><span class="Identifier">WAVE_FORMAT_ROLAND_RDAC</span></a>, <a href="wavetypes.html#lablSubChunkId"><span class="Identifier">lablSubChunkId</span></a>, <a href="wavetypes.html#factSubChunkId"><span class="Identifier">factSubChunkId</span></a>, <a href="wavetypes.html#WAVE_FORMAT_DIGIADPCM"><span class="Identifier">WAVE_FORMAT_DIGIADPCM</span></a>, <a href="wavetypes.html#WAVE_FORMAT_VOXWARE_RT29"><span class="Identifier">WAVE_FORMAT_VOXWARE_RT29</span></a>, <a href="wavetypes.html#WAVE_FORMAT_MSRT24"><span class="Identifier">WAVE_FORMAT_MSRT24</span></a>, <a href="wavetypes.html#WAVE_FORMAT_OLIGSM"><span class="Identifier">WAVE_FORMAT_OLIGSM</span></a>, <a href="wavetypes.html#IBM_FORMAT_MULAW"><span class="Identifier">IBM_FORMAT_MULAW</span></a>, <a href="wavetypes.html#WAVE_FORMAT_EXTENSIBLE"><span class="Identifier">WAVE_FORMAT_EXTENSIBLE</span></a>, <a href="wavetypes.html#WAVE_FORMAT_MS_ADPCM"><span class="Identifier">WAVE_FORMAT_MS_ADPCM</span></a>, <a href="wavetypes.html#WAVE_FORMAT_CREATIVE_ADPCM"><span class="Identifier">WAVE_FORMAT_CREATIVE_ADPCM</span></a>, <a href="wavetypes.html#ltxtSubChunkId"><span class="Identifier">ltxtSubChunkId</span></a>, <a href="wavetypes.html#WAVE_FORMAT_FM_TOWNS_SND"><span class="Identifier">WAVE_FORMAT_FM_TOWNS_SND</span></a>, <a href="wavetypes.html#WAVE_FORMAT_ROCKWELL_ADPCM"><span class="Identifier">WAVE_FORMAT_ROCKWELL_ADPCM</span></a>, <a href="wavetypes.html#WAVE_FORMAT_ECHOSC1"><span class="Identifier">WAVE_FORMAT_ECHOSC1</span></a>, <a href="wavetypes.html#FormatSubChunk"><span class="Identifier">FormatSubChunk</span></a>, <a href="wavetypes.html#WAVE_FORMAT_VOXWARE_AC16"><span class="Identifier">WAVE_FORMAT_VOXWARE_AC16</span></a>, <a href="wavetypes.html#RIFFChunkDescriptor"><span class="Identifier">RIFFChunkDescriptor</span></a>, <a href="wavetypes.html#WAVE_FORMAT_MSG723"><span class="Identifier">WAVE_FORMAT_MSG723</span></a>, <a href="wavetypes.html#WAVE_FORMAT_OLIADPCM"><span class="Identifier">WAVE_FORMAT_OLIADPCM</span></a>, <a href="wavetypes.html#WAVE_FORMAT_OLISBC"><span class="Identifier">WAVE_FORMAT_OLISBC</span></a>, <a href="wavetypes.html#WAVE_FORMAT_OLICELP"><span class="Identifier">WAVE_FORMAT_OLICELP</span></a>, <a href="wavetypes.html#WAVE_FORMAT_DF_GSM610"><span class="Identifier">WAVE_FORMAT_DF_GSM610</span></a>, <a href="wavetypes.html#WAVE_FORMAT_VIVO_G723"><span class="Identifier">WAVE_FORMAT_VIVO_G723</span></a>, <a href="wavetypes.html#WAVE_FORMAT_VME_VMPCM"><span class="Identifier">WAVE_FORMAT_VME_VMPCM</span></a>
 </dl></div>
 
   </div>
@@ -232,7 +260,7 @@ Opens <tt class="docutils literal"><span class="pre">file</span></tt> and return
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2020-08-26 15:56:38 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2022-04-24 22:51:35 UTC</small>
       </div>
     </div>
   </div>
