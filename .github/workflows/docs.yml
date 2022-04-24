@@ -18,7 +18,12 @@ jobs:
         with:
           nim-version: ${{ env.nim-version }}
       - name: Generate documents
-        run: nimble doc --index:on --project --out:${{ env.deploy-dir }} --hints:off src/wave.nim
+        run: >
+          nimble doc
+          --index:on
+          --project --out:${{ env.deploy-dir }}
+          --hints:off
+          src/wave.nim
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v2.4.0
         env:
