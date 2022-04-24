@@ -1,6 +1,8 @@
+---
+
 name: docs
 
-on:
+"on":
   push:
     branches:
       - master
@@ -13,12 +15,17 @@ jobs:
   build-docs-deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
       - uses: jiro4989/setup-nim-action@v1
         with:
           nim-version: ${{ env.nim-version }}
       - name: Generate documents
-        run: nimble doc --index:on --project --out:${{ env.deploy-dir }} --hints:off src/wave.nim
+        run: >
+          nimble doc
+          --index:on
+          --project --out:${{ env.deploy-dir }}
+          --hints:off
+          src/wave.nim
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v2.4.0
         env:
