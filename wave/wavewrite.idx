@@ -1,7 +1,8 @@
-WaveWrite	wave/wavewrite.html#WaveWrite	wavewrite: WaveWrite	
-numChannels=	wave/wavewrite.html#numChannels=,WaveWrite,uint16	wavewrite: numChannels=(self: WaveWrite; numChannels: uint16)	
-sampleRate=	wave/wavewrite.html#sampleRate=,WaveWrite,uint16	wavewrite: sampleRate=(self: WaveWrite; sampleRate: uint16)	
-writeFrames	wave/wavewrite.html#writeFrames,WaveWrite,openArray[byte]	wavewrite: writeFrames(self: WaveWrite; data: openArray[byte])	
-openWaveWriteFile	wave/wavewrite.html#openWaveWriteFile,string	wavewrite: openWaveWriteFile(fileName: string): WaveWrite	
-close	wave/wavewrite.html#close,WaveWrite	wavewrite: close(self: WaveWrite)	
-`$`	wave/wavewrite.html#$,WaveWrite	wavewrite: `$`(self: WaveWrite): string	
+nimTitle	wavewrite	wave/wavewrite.html	module src/wave/wavewrite		0
+nim	WaveWrite	wave/wavewrite.html#WaveWrite	type WaveWrite		5
+nim	numChannels=	wave/wavewrite.html#numChannels=,WaveWrite,uint16	proc numChannels=(self: WaveWrite; numChannels: uint16)		23
+nim	sampleRate=	wave/wavewrite.html#sampleRate=,WaveWrite,uint16	proc sampleRate=(self: WaveWrite; sampleRate: uint16)		28
+nim	writeFrames	wave/wavewrite.html#writeFrames,WaveWrite,openArray[byte]	proc writeFrames(self: WaveWrite; data: openArray[byte])		32
+nim	openWaveWriteFile	wave/wavewrite.html#openWaveWriteFile,string	proc openWaveWriteFile(fileName: string): WaveWrite		40
+nim	close	wave/wavewrite.html#close,WaveWrite	proc close(self: WaveWrite)		56
+nim	`$`	wave/wavewrite.html#$,WaveWrite	proc `$`(self: WaveWrite): string		103
