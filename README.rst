@@ -2,7 +2,7 @@
 wave
 ====
 
-|nimble-version| |nimble-install| |nimble-docs| |gh-actions|
+|gh-actions|
 
 The wave is a tiny `WAV <https://en.wikipedia.org/wiki/WAV>`_ sound module.
 It does not support compression/decompression, but it does support mono/stereo.
@@ -141,9 +141,3 @@ Japanese
 
 .. |gh-actions| image:: https://github.com/jiro4989/wave/workflows/build/badge.svg
    :target: https://github.com/jiro4989/wave/actions
-.. |nimble-version| image:: https://nimble.directory/ci/badges/wave/version.svg
-   :target: https://nimble.directory/ci/badges/wave/nimdevel/output.html
-.. |nimble-install| image:: https://nimble.directory/ci/badges/wave/nimdevel/status.svg
-   :target: https://nimble.directory/ci/badges/wave/nimdevel/output.html
-.. |nimble-docs| image:: https://nimble.directory/ci/badges/wave/nimdevel/docstatus.svg
-   :target: https://nimble.directory/ci/badges/wave/nimdevel/doc_build_output.html
