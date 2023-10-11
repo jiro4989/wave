@@ -132,7 +132,6 @@ English
 Japanese
 --------
 
-* `WAVE ファイルフォーマット <http://www.web-sky.org/program/other/wave.php>`_
 * `cpython/Lib/wave.py <https://github.com/python/cpython/blob/3.8/Lib/wave.py>`_
 * `WAVEファイル読み・書き込み <https://qiita.com/syuhei1008/items/0dd07489f58158fb4f83>`_
 * `WAV (Waveform Audio File Format) <https://so-zou.jp/software/tech/file/format/wav/>`_
